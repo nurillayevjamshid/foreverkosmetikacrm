@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Men kosmetika biznesi uchun CRM tizimi - sotuvlar, kirim-chiqim, mijozlar boshqaruvi">
+    <title>CosmeticaCRM - Men Kosmetika Biznes Boshqaruvi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <span class="logo-text">Cosmetica<span class="logo-accent">CRM</span></span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" data-page="dashboard">
+                <a href="#" class="nav-link" id="nav-dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item" data-page="sales">
+                <a href="#" class="nav-link" id="nav-sales">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Sotuvlar</span>
+                </a>
+            </li>
+            <li class="nav-item" data-page="finance">
+                <a href="#" class="nav-link" id="nav-finance">
+                    <i class="fas fa-wallet"></i>
+                    <span>Kirim / Chiqim</span>
+                </a>
+            </li>
+            <li class="nav-item" data-page="products">
+                <a href="#" class="nav-link" id="nav-products">
+                    <i class="fas fa-box-open"></i>
+                    <span>Mahsulotlar</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-page="settings">
+                <a href="#" class="nav-link" id="nav-settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Sozlamalar</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <span class="user-name" id="displayUserName">Yuklanmoqda...</span>
+                    <span class="user-role">Boshqaruvchi</span>
+                </div>
+                <button id="logoutBtn" class="logout-btn" title="Tizimdan chiqish"
+                    style="color: var(--danger); font-size: 1.2rem; margin-left: auto; background: none; border: none; cursor: pointer;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="page-title-area">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p class="page-subtitle" id="pageSubtitle">Umumiy ko'rinish va statistika</p>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="date-display">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="currentDate"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Pages Container -->
+        <div class="pages-container">
+            <!-- ============== DASHBOARD PAGE ============== -->
+            <section class="page active" id="page-dashboard">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card stat-income">
+                        <div class="stat-icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Jami Kirim</span>
+                            <span class="stat-value" id="totalIncome">0</span>
+                        </div>
+                        <div class="stat-trend up">
+                            <i class="fas fa-trending-up"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-expense">
+                        <div class="stat-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Jami Chiqim</span>
+                            <span class="stat-value" id="totalExpense">0</span>
+                        </div>
+                        <div class="stat-trend down">
+                            <i class="fas fa-trending-down"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-profit">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Sof Foyda</span>
+                            <span class="stat-value" id="totalProfit">0</span>
+                        </div>
+                        <div class="stat-trend up">
+                            <i class="fas fa-trending-up"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-sales">
+                        <div class="stat-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Jami Sotuvlar</span>
+                            <span class="stat-value" id="totalSalesCount">0</span>
+                        </div>
+                        <div class="stat-trend">
+                            <span>dona</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expense List (replaces recent sales & top products) -->
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header"
+                        style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2><i class="fas fa-list-ul"></i> Chiqim ro'yxati</h2>
+                        <button class="btn btn-danger btn-sm" id="addDashExpenseBtn">
+                            <i class="fas fa-plus"></i> Chiqim qo'shish
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table" id="dashExpenseTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Sana</th>
+                                        <th>Kategoriya</th>
+                                        <th>Tavsif</th>
+                                        <th>Summa</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashExpenseBody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="dashEmptyExpense" style="display:none;">
+                            <i class="fas fa-wallet"></i>
+                            <p>Hali chiqimlar yo'q</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============== SALES PAGE ============== -->
+            <section class="page" id="page-sales">
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="addSaleBtn">
+                        <i class="fas fa-plus"></i> Yangi Sotuv
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="salesSearch" placeholder="Qidirish...">
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table" id="salesTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Sana</th>
+                                        <th>Nomi</th>
+                                        <th>Mahsulotlar</th>
+                                        <th>Jami summa</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="salesBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="salesEmpty" style="display:none;">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>Hali sotuvlar yo'q. "Yangi Sotuv" tugmasini bosing.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============== FINANCE PAGE ============== -->
+            <section class="page" id="page-finance">
+                <div class="page-actions">
+                    <button class="btn btn-success" id="addIncomeBtn">
+                        <i class="fas fa-plus"></i> Kirim qo'shish
+                    </button>
+                    <button class="btn btn-danger" id="addExpenseBtn">
+                        <i class="fas fa-minus"></i> Chiqim qo'shish
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="financeSearch" placeholder="Qidirish...">
+                    </div>
+                </div>
+
+                <div class="finance-summary">
+                    <div class="finance-summary-card income-card">
+                        <i class="fas fa-arrow-circle-down"></i>
+                        <div>
+                            <span class="fs-label">Kirim</span>
+                            <span class="fs-value" id="financeIncome">0 so'm</span>
+                        </div>
+                    </div>
+                    <div class="finance-summary-card expense-card">
+                        <i class="fas fa-arrow-circle-up"></i>
+                        <div>
+                            <span class="fs-label">Chiqim</span>
+                            <span class="fs-value" id="financeExpense">0 so'm</span>
+                        </div>
+                    </div>
+                    <div class="finance-summary-card balance-card">
+                        <i class="fas fa-balance-scale"></i>
+                        <div>
+                            <span class="fs-label">Balans</span>
+                            <span class="fs-value" id="financeBalance">0 so'm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table" id="financeTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Sana</th>
+                                        <th>Turi</th>
+                                        <th>Kategoriya</th>
+                                        <th>Tavsif</th>
+                                        <th>Summa</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="financeBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="financeEmpty" style="display:none;">
+                            <i class="fas fa-wallet"></i>
+                            <p>Hali kirim-chiqimlar yo'q.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============== PRODUCTS PAGE ============== -->
+            <section class="page" id="page-products">
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="addProductBtn">
+                        <i class="fas fa-plus"></i> Yangi Mahsulot
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="productsSearch" placeholder="Qidirish...">
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table" id="productsTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Mahsulot</th>
+                                        <th>Kategoriya</th>
+                                        <th>Narx</th>
+                                        <th>Tannarx</th>
+                                        <th>Status</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="productsEmpty" style="display:none;">
+                            <i class="fas fa-box-open"></i>
+                            <p>Hali mahsulotlar yo'q. "Yangi Mahsulot" tugmasini bosing.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- ============== SETTINGS PAGE ============== -->
+            <section class="page" id="page-settings">
+                <!-- Theme Mode Settings -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <h2><i class="fas fa-adjust"></i> Sistema holati (Tungi / Kunduzgi)</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="theme-mode-switch">
+                            <button class="btn btn-secondary" id="btnLightMode">
+                                <i class="fas fa-sun"></i> Kunduzgi (Light)
+                            </button>
+                            <button class="btn btn-primary" id="btnDarkMode">
+                                <i class="fas fa-moon"></i> Tungi (Dark)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management -->
+                <div class="card">
+                    <div class="card-header"
+                        style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2><i class="fas fa-user-shield"></i> Foydalanuvchilar (Admin)</h2>
+                        <button class="btn btn-primary btn-sm" id="addUserBtn">
+                            <i class="fas fa-user-plus"></i> Yangi foydalanuvchi
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table" id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Ismi</th>
+                                        <th>Email (Login)</th>
+                                        <th>Yaratilgan</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersBody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ============== MODALS ============== -->
+    <!-- Sale Modal (updated: name instead of customer select, no quantity) -->
+    <div class="modal-overlay" id="saleModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="saleModalTitle"><i class="fas fa-shopping-cart"></i> Yangi Sotuv</h2>
+                <button class="modal-close" data-modal="saleModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="saleForm" class="modal-body">
+                <input type="hidden" id="saleId">
+                <div class="form-group">
+                    <label for="saleDate"><i class="fas fa-calendar"></i> Sana</label>
+                    <input type="date" id="saleDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="saleName"><i class="fas fa-tag"></i> Nomi (eslatma)</label>
+                    <input type="text" id="saleName" placeholder="Masalan: Abdulloh - Krem" required>
+                </div>
+                <div class="form-group"
+                    style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: 15px;">
+                    <label style="margin-bottom: 12px; font-weight: 600; color: var(--accent);"><i
+                            class="fas fa-list-check"></i> Mahsulotlar</label>
+                    <div id="saleItemsList" class="sale-items-container">
+                        <!-- Dynamic rows -->
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm sale-items-add-btn" id="addSaleItemBtn">
+                        <i class="fas fa-plus"></i> Yana bitta qo'shish
+                    </button>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <div
+                        style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; border-left: 5px solid var(--accent); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+                        <span style="font-weight: 600; font-size: 1rem; color: var(--text-secondary);">Umumiy
+                            jami:</span>
+                        <span id="saleTotalDisplay" style="font-weight: 800; color: var(--accent); font-size: 1.4rem;">0
+                            so'm</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="saleNote"><i class="fas fa-sticky-note"></i> Izoh</label>
+                    <textarea id="saleNote" rows="2" placeholder="Qo'shimcha izoh..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal="saleModal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Finance Modal -->
+    <div class="modal-overlay" id="financeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="financeModalTitle"><i class="fas fa-wallet"></i> Kirim qo'shish</h2>
+                <button class="modal-close" data-modal="financeModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="financeForm" class="modal-body">
+                <input type="hidden" id="financeId">
+                <input type="hidden" id="financeType" value="income">
+                <div class="form-group">
+                    <label for="financeDate"><i class="fas fa-calendar"></i> Sana</label>
+                    <input type="date" id="financeDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="financeCategory"><i class="fas fa-tag"></i> Kategoriya</label>
+                    <select id="financeCategory" required>
+                        <option value="">Tanlang...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="financeAmount"><i class="fas fa-money-bill"></i> Summa (so'm)</label>
+                    <input type="number" id="financeAmount" min="0" step="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="financeDescription"><i class="fas fa-pencil-alt"></i> Tavsif</label>
+                    <textarea id="financeDescription" rows="2" placeholder="Izoh yozing..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal="financeModal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="productModalTitle"><i class="fas fa-box-open"></i> Yangi Mahsulot</h2>
+                <button class="modal-close" data-modal="productModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="productForm" class="modal-body">
+                <input type="hidden" id="productId">
+                <div class="form-group">
+                    <label for="productName"><i class="fas fa-tag"></i> Nomi</label>
+                    <input type="text" id="productName" placeholder="Masalan: Face Cream" required>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory"><i class="fas fa-layer-group"></i> Kategoriya</label>
+                    <select id="productCategory" required>
+                        <option value="">Tanlang...</option>
+                        <option value="Yuz kremi">Yuz kremi</option>
+                        <option value="Parfyumeriya">Parfyumeriya</option>
+                        <option value="Soqol parvarishi">Soqol parvarishi</option>
+                        <option value="Soch parvarishi">Soch parvarishi</option>
+                        <option value="Tana parvarishi">Tana parvarishi</option>
+                        <option value="Atir">Atir</option>
+                        <option value="Dezodorant">Dezodorant</option>
+                        <option value="Boshqa">Boshqa</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productPrice"><i class="fas fa-money-bill"></i> Narxi (so'm)</label>
+                        <input type="number" id="productPrice" min="0" step="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productStatus"><i class="fas fa-toggle-on"></i> Status</label>
+                        <select id="productStatus" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productCost"><i class="fas fa-receipt"></i> Tannarx (so'm)</label>
+                    <input type="number" id="productCost" min="0" step="100" placeholder="Sotib olish narxi">
+                </div>
+                <div class="form-group">
+                    <label for="productDescription"><i class="fas fa-info-circle"></i> Tavsif</label>
+                    <textarea id="productDescription" rows="2" placeholder="Mahsulot haqida..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productImage"><i class="fas fa-image"></i> Mahsulot rasmi</label>
+                    <div class="image-upload-area" id="imageUploadArea">
+                        <input type="file" id="productImage" accept="image/*" style="display:none;">
+                        <div class="image-preview-container" id="imagePreviewContainer" style="display:none;">
+                            <img id="imagePreview" src="" alt="Rasm oldindan ko'rish">
+                            <button type="button" class="image-remove-btn" id="removeImageBtn" title="Rasmni o'chirish">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="image-upload-placeholder" id="imageUploadPlaceholder">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Rasm yuklash uchun bosing</p>
+                            <span>JPG, PNG, WEBP (max 5MB)</span>
+                        </div>
+                    </div>
+                    <div class="upload-progress" id="uploadProgress" style="display:none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal="productModal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary" id="saveProductBtn">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- User Form Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="userModalTitle"><i class="fas fa-user-plus"></i> Yangi foydalanuvchi yaratish</h2>
+                <button class="modal-close" data-modal="userModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="userForm" class="modal-body">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label for="newUserName"><i class="fas fa-user"></i> Ismi</label>
+                    <input type="text" id="newUserName" placeholder="Masalan: Kozimjon" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserEmail"><i class="fas fa-envelope"></i> Email (Login)</label>
+                    <input type="email" id="newUserEmail" placeholder="admin@gmail.com" required>
+                    <small style="color:var(--text-muted); font-size:11px;">Eslatma: Mavjud emailni o'zgartirib
+                        bo'lmaydi</small>
+                </div>
+                <div class="form-group" id="passGroup">
+                    <label for="newUserPassword"><i class="fas fa-lock"></i> Parol</label>
+                    <input type="password" id="newUserPassword" placeholder="Kamida 6 ta belgi" required minlength="6">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal="userModal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary" id="createUserBtn">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal modal-sm">
+            <div class="modal-header modal-header-danger">
+                <h2><i class="fas fa-exclamation-triangle"></i> O'chirish</h2>
+                <button class="modal-close" data-modal="deleteModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="delete-message" id="deleteMessage">Haqiqatan ham o'chirmoqchimisiz?</p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal="deleteModal">Yo'q</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Ha, o'chirish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase Compat SDKs (works with file:// protocol) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcXc0svgxLtPvOYwpNUIzyRJGgajbyR9M",
+            authDomain: "foreverkosmetika.firebaseapp.com",
+            projectId: "foreverkosmetika",
+            storageBucket: "foreverkosmetika.appspot.com",
+            messagingSenderId: "1013746676566",
+            appId: "1:1013746676566:web:0032dfcb13239db2d15cf7",
+            measurementId: "G-B71E70JH2Z"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+    </script>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

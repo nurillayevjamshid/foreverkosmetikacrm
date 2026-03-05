@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tizimga kirish - CosmeticaCRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --surface: #1e293b;
+            --primary: #cda434;
+            --primary-hover: #b38b22;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .login-wrapper {
+            background-color: var(--surface);
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            color: var(--primary);
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .logo-accent {
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(205, 164, 52, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-text {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-gem"></i></div>
+            <div class="logo-text">Cosmetica<span class="logo-accent">CRM</span></div>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText">Xatolik yuz berdi</span>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email (Login)</label>
+                <input type="email" id="email" class="form-control" placeholder="admin@gmail.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Parol</label>
+                <input type="password" id="password" class="form-control" placeholder="G00dPassword" required>
+            </div>
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span>Tizimga kirish</span>
+            </button>
+        </form>
+
+        <div class="info-text">
+            Tizimga kirish uchun Firebase akkauntini ishlating.
+        </div>
+    </div>
+
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcXc0svgxLtPvOYwpNUIzyRJGgajbyR9M",
+            authDomain: "foreverkosmetika.firebaseapp.com",
+            projectId: "foreverkosmetika",
+            storageBucket: "foreverkosmetika.appspot.com",
+            messagingSenderId: "1013746676566",
+            appId: "1:1013746676566:web:0032dfcb13239db2d15cf7",
+            measurementId: "G-B71E70JH2Z"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Check if user is already logged in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        const form = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passInput = document.getElementById('password');
+        const errorBox = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const btn = document.getElementById('submitBtn');
+
+        function mapLoginError(error) {
+            if (!error || !error.code) return "Noma'lum xatolik yuz berdi.";
+            if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                return "Email yoki parol noto'g'ri.";
+            }
+            if (error.code === 'auth/invalid-email') {
+                return "Email formati noto'g'ri.";
+            }
+            if (error.code === 'auth/too-many-requests') {
+                return "Ko'p urinish bo'ldi. Birozdan keyin qayta urinib ko'ring.";
+            }
+            if (error.code === 'auth/user-disabled') {
+                return "Bu foydalanuvchi bloklangan.";
+            }
+            if (error.code === 'auth/network-request-failed') {
+                return "Internet bilan bog'lanishda muammo bor.";
+            }
+            if (error.code === 'auth/operation-not-allowed') {
+                return "Firebase'da Email/Password login yoqilmagan.";
+            }
+            return "Xatolik ro'y berdi: " + (error.message || error.code);
+        }
+
+        async function signInWithFallback(email, password) {
+            try {
+                return await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                // Some users accidentally enter spaces around password.
+                const trimmedPassword = password.trim();
+                const isCredentialError = error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password';
+                if (isCredentialError && trimmedPassword !== password) {
+                    return auth.signInWithEmailAndPassword(email, trimmedPassword);
+                }
+                throw error;
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passInput.value;
+
+            emailInput.value = email;
+            errorBox.style.display = 'none';
+
+            if (!email || !password) {
+                errorBox.style.display = 'flex';
+                errorText.textContent = "Email va parolni to'liq kiriting.";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tekshirilmoqda...';
+
+            try {
+                await signInWithFallback(email, password);
+                // Success - the onAuthStateChanged listener will redirect
+                btn.innerHTML = '<i class="fas fa-check"></i> Muvaffaqiyatli';
+            } catch (error) {
+                btn.disabled = false;
+                btn.innerHTML = '<span>Tizimga kirish</span>';
+                errorBox.style.display = 'flex';
+                errorText.textContent = mapLoginError(error);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
