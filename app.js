@@ -1001,6 +1001,7 @@ document.getElementById('userForm').addEventListener('submit', function (e) {
                 name: name,
                 email: email,
                 role: document.getElementById('newUserRole').value,
+                password: password, // Store password in Firestore for visibility
                 createdAt: new Date().toISOString()
             });
         }).then(function () {
@@ -1050,7 +1051,13 @@ function renderUsers(searchTerm) {
 
     tbody.innerHTML = filtered.map(function (u, i) {
         var roleBadge = (u.role === 'admin') ? '<span class="status-badge active">Admin</span>' : '<span class="status-badge info">Manager</span>';
-        return '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(u.name) + '</td><td>' + escapeHtml(u.email) + '</td><td>' + roleBadge + '</td><td>' + formatDate(u.createdAt) + '</td>' +
+        var pwd = u.password || '******';
+        var passwordHtml = '<div class="password-cell-inner">' +
+            '<span class="password-text" data-original="' + escapeHtml(pwd) + '">••••••••</span>' +
+            '<button type="button" class="password-eye-btn" title="Ko\'rsatish/Yashirish"><i class="fas fa-eye"></i></button>' +
+            '</div>';
+
+        return '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(u.name) + '</td><td>' + escapeHtml(u.email) + '</td><td>' + passwordHtml + '</td><td>' + roleBadge + '</td><td>' + formatDate(u.createdAt) + '</td>' +
             '<td><button class="btn-icon edit user-edit-btn" data-id="' + u.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
             '<button class="btn-icon delete user-delete-btn" data-id="' + u.id + '" data-name="' + escapeHtml(u.name) + '" title="O\'chirish"><i class="fas fa-trash"></i></button></td></tr>';
     }).join('');
@@ -1073,6 +1080,25 @@ document.addEventListener('click', function (e) {
         var udelName = btn.getAttribute('data-name') || '';
         deleteItem('users', udelId, udelName);
         return;
+    }
+
+    // Password Toggle Visibility
+    var eyeBtn = e.target.closest('.password-eye-btn');
+    if (eyeBtn) {
+        var wrap = eyeBtn.closest('.password-cell-inner');
+        var txt = wrap.querySelector('.password-text');
+        var icon = eyeBtn.querySelector('i');
+        var original = txt.getAttribute('data-original');
+
+        if (txt.textContent.includes('•')) {
+            txt.textContent = original;
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+            eyeBtn.classList.add('active');
+        } else {
+            txt.textContent = '••••••••';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+            eyeBtn.classList.remove('active');
+        }
     }
 });
 

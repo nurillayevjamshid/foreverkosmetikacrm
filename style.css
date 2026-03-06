@@ -2098,4 +2098,11 @@ html[data-theme="light"] .image-upload-area {
     .sale-item-remove {
         justify-self: flex-end;
     }
-}
+}@charset " UTF-8\;
+
+/* Password Field Styles */
+.password-cell-inner { display: flex; align-items: center; gap: 10px; }
+.password-text { font-family: monospace; font-size: 14px; letter-spacing: 1px; min-width: 80px; }
+.password-eye-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: var(--transition-fast); }
+.password-eye-btn:hover { color: var(--accent); }
+.password-eye-btn.active { color: var(--accent); }
