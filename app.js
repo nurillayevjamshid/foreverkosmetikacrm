@@ -18,11 +18,17 @@ auth.onAuthStateChanged(function (user) {
         db.collection('users').doc(user.uid).get().then(function (doc) {
             if (doc.exists) {
                 var data = doc.data() || {};
-                if (data.role) currentUserRole = data.role;
+                if (data.role) currentUserRole = String(data.role).trim().toLowerCase();
+                // Update role text in UI
+                var roleTextEl = document.querySelector('.user-role');
+                if (roleTextEl) {
+                    roleTextEl.textContent = (currentUserRole === 'admin') ? 'Admin' : 'Menejer';
+                }
             }
             renderProducts();
             updateUIVisibility();
-        }).catch(function () {
+        }).catch(function (error) {
+            console.error("Error loading user role:", error);
             currentUserRole = 'admin';
             renderProducts();
             updateUIVisibility();
@@ -148,8 +154,9 @@ function updateUIVisibility(currentPage) {
     // Role-based UI visibility
     var staffNavItem = document.querySelector('.nav-item[data-page="staff"]');
     if (staffNavItem) {
-        staffNavItem.style.display = (currentUserRole === 'admin') ? 'block' : 'none';
-        if (currentPage === 'staff' && currentUserRole !== 'admin') {
+        var is_Admin = (currentUserRole === 'admin');
+        staffNavItem.style.display = is_Admin ? 'block' : 'none';
+        if (currentPage === 'staff' && !is_Admin) {
             navigateTo('dashboard');
         }
     }
@@ -1050,7 +1057,8 @@ function renderUsers(searchTerm) {
     if (empty) empty.style.display = 'none';
 
     tbody.innerHTML = filtered.map(function (u, i) {
-        var roleBadge = (u.role === 'admin') ? '<span class="status-badge active">Admin</span>' : '<span class="status-badge info">Manager</span>';
+        var uRole = (u.role && String(u.role).trim().toLowerCase() === 'admin');
+        var roleBadge = uRole ? '<span class="status-badge active">Admin</span>' : '<span class="status-badge info">Manager</span>';
         var pwd = u.password || '******';
         var passwordHtml = '<div class="password-cell-inner">' +
             '<span class="password-text" data-original="' + escapeHtml(pwd) + '">••••••••</span>' +
