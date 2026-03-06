@@ -21,9 +21,11 @@ auth.onAuthStateChanged(function (user) {
                 if (data.role) currentUserRole = data.role;
             }
             renderProducts();
+            updateUIVisibility();
         }).catch(function () {
             currentUserRole = 'admin';
             renderProducts();
+            updateUIVisibility();
         });
     }
 });
@@ -120,7 +122,8 @@ var pageConfig = {
     sales: { title: 'Sotuvlar', subtitle: 'Barcha sotuvlarni boshqarish' },
     finance: { title: 'Kirim / Chiqim', subtitle: 'Moliyaviy operatsiyalar' },
     products: { title: 'Mahsulotlar', subtitle: "Mahsulotlar ro'yxati va boshqaruvi" },
-    settings: { title: 'Sozlamalar', subtitle: 'Tizim sozlamalari va foydalanuvchilar' }
+    settings: { title: 'Sozlamalar', subtitle: 'Tizim sozlamalari boshqaruvi' },
+    staff: { title: 'Xodimlar', subtitle: 'Xodimlar va kirish huquqlari' }
 };
 
 function navigateTo(pageName) {
@@ -138,6 +141,18 @@ function navigateTo(pageName) {
     document.getElementById('sidebar').classList.remove('open');
     var overlay = document.querySelector('.sidebar-overlay');
     if (overlay) overlay.classList.remove('active');
+    updateUIVisibility(pageName);
+}
+
+function updateUIVisibility(currentPage) {
+    // Role-based UI visibility
+    var staffNavItem = document.querySelector('.nav-item[data-page="staff"]');
+    if (staffNavItem) {
+        staffNavItem.style.display = (currentUserRole === 'admin') ? 'block' : 'none';
+        if (currentPage === 'staff' && currentUserRole !== 'admin') {
+            navigateTo('dashboard');
+        }
+    }
 }
 
 document.querySelectorAll('.nav-item').forEach(function (item) {
@@ -927,7 +942,7 @@ document.getElementById('addUserBtn').addEventListener('click', function () {
     document.getElementById('newUserEmail').disabled = false;
     document.getElementById('newUserPassword').required = true;
     document.getElementById('passGroup').style.display = 'block';
-    document.getElementById('userModalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Yangi foydalanuvchi yaratish';
+    document.getElementById('userModalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Yangi xodim qo\'shish';
     openModal('userModal');
 });
 
@@ -938,10 +953,11 @@ function editUser(id) {
     document.getElementById('editUserId').value = u.id;
     document.getElementById('newUserName').value = u.name;
     document.getElementById('newUserEmail').value = u.email;
+    document.getElementById('newUserRole').value = u.role || 'manager';
     document.getElementById('newUserEmail').disabled = true;
     document.getElementById('newUserPassword').required = false;
     document.getElementById('passGroup').style.display = 'none';
-    document.getElementById('userModalTitle').innerHTML = '<i class="fas fa-user-edit"></i> Foydalanuvchini tahrirlash';
+    document.getElementById('userModalTitle').innerHTML = '<i class="fas fa-user-edit"></i> Xodimni tahrirlash';
     openModal('userModal');
 }
 
@@ -957,8 +973,11 @@ document.getElementById('userForm').addEventListener('submit', function (e) {
     btn.textContent = 'Saqlanmoqda...';
 
     if (id) {
-        db.collection("users").doc(id).update({ name: name }).then(function () {
-            showToast("Foydalanuvchi yangilandi!");
+        db.collection("users").doc(id).update({
+            name: name,
+            role: document.getElementById('newUserRole').value
+        }).then(function () {
+            showToast("Xodim ma'lumotlari yangilandi!");
             closeModal('userModal');
             btn.disabled = false;
             btn.textContent = 'Saqlash';
@@ -981,12 +1000,12 @@ document.getElementById('userForm').addEventListener('submit', function (e) {
             return db.collection("users").doc(cred.user.uid).set({
                 name: name,
                 email: email,
-                role: 'assistant',
+                role: document.getElementById('newUserRole').value,
                 createdAt: new Date().toISOString()
             });
         }).then(function () {
             secondaryAuth.signOut();
-            showToast("Yangi foydalanuvchi yaratildi!");
+            showToast("Yangi xodim qo'shildi!");
             closeModal('userModal');
             btn.disabled = false;
             btn.textContent = 'Saqlash';
@@ -1004,15 +1023,38 @@ document.getElementById('userForm').addEventListener('submit', function (e) {
 
 // Load users list
 db.collection("users").onSnapshot(function (snapshot) {
-    var tbody = document.getElementById('usersBody');
     usersArr = [];
     snapshot.forEach(function (doc) { usersArr.push(Object.assign({ id: doc.id }, doc.data())); });
-    tbody.innerHTML = usersArr.map(function (u, i) {
-        return '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(u.name) + '</td><td>' + escapeHtml(u.email) + '</td><td>' + formatDate(u.createdAt) + '</td>' +
+    renderUsers();
+});
+
+function renderUsers(searchTerm) {
+    searchTerm = searchTerm || '';
+    var tbody = document.getElementById('usersBody');
+    var empty = document.getElementById('usersEmpty');
+    var filtered = usersArr.slice().sort(function (a, b) { return new Date(b.createdAt) - new Date(a.createdAt); });
+
+    if (searchTerm) {
+        var q = searchTerm.toLowerCase();
+        filtered = filtered.filter(function (u) {
+            return u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+        });
+    }
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        if (empty) empty.style.display = 'block';
+        return;
+    }
+    if (empty) empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(function (u, i) {
+        var roleBadge = (u.role === 'admin') ? '<span class="status-badge active">Admin</span>' : '<span class="status-badge info">Manager</span>';
+        return '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(u.name) + '</td><td>' + escapeHtml(u.email) + '</td><td>' + roleBadge + '</td><td>' + formatDate(u.createdAt) + '</td>' +
             '<td><button class="btn-icon edit user-edit-btn" data-id="' + u.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
             '<button class="btn-icon delete user-delete-btn" data-id="' + u.id + '" data-name="' + escapeHtml(u.name) + '" title="O\'chirish"><i class="fas fa-trash"></i></button></td></tr>';
     }).join('');
-});
+}
 
 // User edit/delete delegatsiya
 document.addEventListener('click', function (e) {
@@ -1040,6 +1082,7 @@ document.addEventListener('click', function (e) {
 document.getElementById('salesSearch').addEventListener('input', function (e) { renderSales(e.target.value); });
 document.getElementById('financeSearch').addEventListener('input', function (e) { renderFinance(e.target.value); });
 document.getElementById('productsSearch').addEventListener('input', function (e) { renderProducts(e.target.value); });
+document.getElementById('staffSearch').addEventListener('input', function (e) { renderUsers(e.target.value); });
 
 
 // ==========================================

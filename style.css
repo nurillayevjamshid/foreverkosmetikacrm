@@ -951,6 +951,11 @@ body {
     color: var(--danger);
 }
 
+.status-badge.info {
+    background: var(--info-bg);
+    color: var(--info);
+}
+
 /* ===========================
    Product list row (image + text)
    =========================== */

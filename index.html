@@ -62,6 +62,12 @@
                     <span>Sozlamalar</span>
                 </a>
             </li>
+            <li class="nav-item" data-page="staff">
+                <a href="#" class="nav-link" id="nav-staff">
+                    <i class="fas fa-users-cog"></i>
+                    <span>Xodimlar</span>
+                </a>
+            </li>
         </ul>
 
         <div class="sidebar-footer">
@@ -357,14 +363,23 @@
                     </div>
                 </div>
 
+            </section>
+
+            <!-- ============== STAFF PAGE ============== -->
+            <section class="page" id="page-staff">
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="addUserBtn">
+                        <i class="fas fa-user-plus"></i> Yangi xodim
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="staffSearch" placeholder="Qidirish...">
+                    </div>
+                </div>
                 <!-- User Management -->
                 <div class="card">
-                    <div class="card-header"
-                        style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2><i class="fas fa-user-shield"></i> Foydalanuvchilar (Admin)</h2>
-                        <button class="btn btn-primary btn-sm" id="addUserBtn">
-                            <i class="fas fa-user-plus"></i> Yangi foydalanuvchi
-                        </button>
+                    <div class="card-header">
+                        <h2><i class="fas fa-user-shield"></i> Xodimlar va Rollar boshqaruvi</h2>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -374,6 +389,7 @@
                                         <th>#</th>
                                         <th>Ismi</th>
                                         <th>Email (Login)</th>
+                                        <th>Rol</th>
                                         <th>Yaratilgan</th>
                                         <th>Amallar</th>
                                     </tr>
@@ -382,6 +398,10 @@
                                     <!-- Dynamic -->
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="empty-state" id="usersEmpty" style="display:none;">
+                            <i class="fas fa-users"></i>
+                            <p>Hodimlar topilmadi.</p>
                         </div>
                     </div>
                 </div>
@@ -561,20 +581,25 @@
     <div class="modal-overlay" id="userModal">
         <div class="modal">
             <div class="modal-header">
-                <h2 id="userModalTitle"><i class="fas fa-user-plus"></i> Yangi foydalanuvchi yaratish</h2>
+                <h2 id="userModalTitle"><i class="fas fa-user-plus"></i> Yangi xodim qo'shish</h2>
                 <button class="modal-close" data-modal="userModal"><i class="fas fa-times"></i></button>
             </div>
             <form id="userForm" class="modal-body">
                 <input type="hidden" id="editUserId">
                 <div class="form-group">
-                    <label for="newUserName"><i class="fas fa-user"></i> Ismi</label>
+                    <label for="newUserName"><i class="fas fa-user"></i> To'liq ismi</label>
                     <input type="text" id="newUserName" placeholder="Masalan: Kozimjon" required>
                 </div>
                 <div class="form-group">
                     <label for="newUserEmail"><i class="fas fa-envelope"></i> Email (Login)</label>
                     <input type="email" id="newUserEmail" placeholder="admin@gmail.com" required>
-                    <small style="color:var(--text-muted); font-size:11px;">Eslatma: Mavjud emailni o'zgartirib
-                        bo'lmaydi</small>
+                </div>
+                <div class="form-group">
+                    <label for="newUserRole"><i class="fas fa-user-tag"></i> Rol</label>
+                    <select id="newUserRole" required>
+                        <option value="admin">Admin (To'liq huquq)</option>
+                        <option value="manager">Manager (Cheklangan)</option>
+                    </select>
                 </div>
                 <div class="form-group" id="passGroup">
                     <label for="newUserPassword"><i class="fas fa-lock"></i> Parol</label>
