@@ -1553,16 +1553,33 @@ function renderCustomers(searchQuery) {
         } else {
             customersEmpty.style.display = 'none';
             customersBody.innerHTML = customers.map(function (c, i) {
+                var totalSpent = c.totalSpent || 0;
+                var vipBadge = totalSpent > 5000000 ? '<span class="status-badge active" style="background: linear-gradient(45deg, #ffd700, #ffa500); color: #000; border: none;"><i class="fas fa-crown"></i> VIP</span>' : 
+                               totalSpent > 1000000 ? '<span class="status-badge info">Doimiy</span>' : 
+                               '<span class="status-badge">Yangi</span>';
+                
+                var phoneDisplay = '<div>' + escapeHtml(c.phone) + '</div>';
+                if (c.telegram) {
+                    var tgLink = c.telegram.startsWith('@') ? c.telegram.substring(1) : c.telegram;
+                    phoneDisplay += '<a href="https://t.me/' + tgLink + '" target="_blank" style="color: #0088cc; font-size: 0.85rem;"><i class="fab fa-telegram"></i> ' + escapeHtml(c.telegram) + '</a>';
+                }
+
+                var debt = c.debt || 0;
+                var debtClass = debt > 0 ? 'amount-negative' : '';
+
                 return '<tr>' +
                     '<td>' + (i + 1) + '</td>' +
-                    '<td>' + escapeHtml(c.name) + '</td>' +
-                    '<td>' + escapeHtml(c.phone) + '</td>' +
+                    '<td><div style="font-weight:600">' + escapeHtml(c.name) + '</div>' + (c.birthday ? '<div style="font-size:0.75rem; color:var(--text-muted)"><i class="fas fa-birthday-cake"></i> ' + c.birthday + '</div>' : '') + '</td>' +
+                    '<td>' + phoneDisplay + '</td>' +
                     '<td>' + escapeHtml(c.region || '-') + '</td>' +
                     '<td>' + (c.salesCount || 0) + '</td>' +
-                    '<td>' + formatMoney(c.totalSpent || 0) + '</td>' +
+                    '<td>' + formatMoney(totalSpent) + '</td>' +
+                    '<td class="' + debtClass + '">' + formatMoney(debt) + '</td>' +
+                    '<td>' + vipBadge + '</td>' +
                     '<td>' +
-                    '<button class="btn-icon edit customer-edit-btn" data-id="' + c.id + '"><i class="fas fa-pen"></i></button>' +
-                    '<button class="btn-icon delete customer-delete-btn" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '"><i class="fas fa-trash"></i></button>' +
+                    '<button class="btn-icon info customer-history-btn" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '" title="Xaridlar tarixi"><i class="fas fa-history"></i></button>' +
+                    '<button class="btn-icon edit customer-edit-btn" data-id="' + c.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
+                    '<button class="btn-icon delete customer-delete-btn" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '" title="O\'chirish"><i class="fas fa-trash"></i></button>' +
                     '</td>' +
                     '</tr>';
             }).join('');
@@ -1586,7 +1603,10 @@ document.getElementById('customerForm').addEventListener('submit', function (e) 
     var data = {
         name: document.getElementById('customerName').value.trim(),
         phone: document.getElementById('customerPhone').value.trim(),
+        telegram: document.getElementById('customerTelegram').value.trim(),
+        birthday: document.getElementById('customerBirthday').value,
         region: document.getElementById('customerRegion').value,
+        address: document.getElementById('customerAddress').value.trim(),
         note: document.getElementById('customerNote').value.trim(),
         updatedAt: new Date().toISOString()
     };
@@ -1599,6 +1619,7 @@ document.getElementById('customerForm').addEventListener('submit', function (e) 
         data.createdAt = new Date().toISOString();
         data.salesCount = 0;
         data.totalSpent = 0;
+        data.debt = 0;
         db.collection('customers').add(data)
             .then(function () { showToast('Yangi mijoz qo\'shildi'); closeModal('customerModal'); })
             .catch(function (err) { showToast('Xatolik: ' + err.message, 'error'); });
@@ -1616,6 +1637,9 @@ document.addEventListener('click', function (e) {
                 document.getElementById('customerId').value = id;
                 document.getElementById('customerName').value = c.name;
                 document.getElementById('customerPhone').value = c.phone;
+                document.getElementById('customerTelegram').value = c.telegram || '';
+                document.getElementById('customerBirthday').value = c.birthday || '';
+                document.getElementById('customerAddress').value = c.address || '';
                 document.getElementById('customerNote').value = c.note || '';
                 setSelectValue('customerRegionPicker', c.region, c.region);
                 document.getElementById('customerModalTitle').innerHTML = '<i class="fas fa-pen"></i> Mijozni tahrirlash';
@@ -1625,11 +1649,63 @@ document.addEventListener('click', function (e) {
         return;
     }
 
+    btn = e.target.closest('.customer-history-btn');
+    if (btn) {
+        var id = btn.dataset.id;
+        var name = btn.dataset.name;
+        showCustomerHistory(id, name);
+        return;
+    }
+
     btn = e.target.closest('.customer-delete-btn');
     if (btn) {
         deleteItem('customers', btn.dataset.id, btn.dataset.name);
     }
 });
+
+function showCustomerHistory(customerId, customerName) {
+    document.getElementById('historyCustomerName').textContent = customerName;
+    var historyBody = document.getElementById('customerHistoryBody');
+    historyBody.innerHTML = '<tr><td colspan="4" style="text-align:center"><i class="fas fa-spinner fa-spin"></i> Yuklanmoqda...</td></tr>';
+    
+    // Mijoz ma'lumotlarini olish
+    db.collection('customers').doc(customerId).get().then(function(doc) {
+        if (doc.exists) {
+            var c = doc.data();
+            document.getElementById('historyTotalSales').textContent = c.salesCount || 0;
+            document.getElementById('historyTotalSpent').textContent = formatMoney(c.totalSpent || 0);
+            document.getElementById('historyTotalDebt').textContent = formatMoney(c.debt || 0);
+        }
+    });
+
+    // Sotuvlar tarixini olish (Mijoz ismi bo'yicha)
+    db.collection('sales').where('name', '==', customerName).orderBy('date', 'desc').get().then(function(snapshot) {
+        if (snapshot.empty) {
+            historyBody.innerHTML = '<tr><td colspan="4" style="text-align:center">Xaridlar mavjud emas</td></tr>';
+        } else {
+            var html = '';
+            snapshot.forEach(function(doc) {
+                var s = doc.data();
+                var itemsStr = s.items ? s.items.map(function(it) {
+                    var p = productsArr.find(function(px) { return px.id === it.productId; });
+                    return (p ? p.name : 'Mahsulot') + ' (x' + it.quantity + ')';
+                }).join(', ') : '—';
+                
+                html += '<tr>' +
+                    '<td>' + formatDate(s.date) + '</td>' +
+                    '<td style="font-size:0.85rem">' + escapeHtml(itemsStr) + '</td>' +
+                    '<td>' + formatMoney(s.totalAmount) + '</td>' +
+                    '<td><span class="status-badge active">Sotilgan</span></td>' +
+                    '</tr>';
+            });
+            historyBody.innerHTML = html;
+        }
+        openModal('customerHistoryModal');
+    }).catch(function(err) {
+        console.error("History error:", err);
+        historyBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--danger)">Yuklashda xatolik yuz berdi</td></tr>';
+    });
+}
 
 // Qidiruv
 document.getElementById('customersSearch').addEventListener('input', function (e) {

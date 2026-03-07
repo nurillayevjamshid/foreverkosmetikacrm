@@ -288,10 +288,12 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Mijoz ismi</th>
-                                        <th>Telefon</th>
+                                        <th>Telefon / Telegram</th>
                                         <th>Viloyat</th>
                                         <th>Sotuvlar soni</th>
                                         <th>Umumiy savdo</th>
+                                        <th>Qarz</th>
+                                        <th>Status</th>
                                         <th>Amallar</th>
                                     </tr>
                                 </thead>
@@ -768,22 +770,38 @@
                     <label for="customerName"><i class="fas fa-user"></i> Mijoz ismi</label>
                     <input type="text" id="customerName" placeholder="To'liq ismini kiriting" required>
                 </div>
-                <div class="form-group">
-                    <label for="customerPhone"><i class="fas fa-phone"></i> Telefon raqami</label>
-                    <input type="tel" id="customerPhone" placeholder="+998 90 123 45 67" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerPhone"><i class="fas fa-phone"></i> Telefon raqami</label>
+                        <input type="tel" id="customerPhone" placeholder="+998 90 123 45 67" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerTelegram"><i class="fab fa-telegram"></i> Telegram (@username)</label>
+                        <input type="text" id="customerTelegram" placeholder="@foydalanuvchi">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="customerRegion"><i class="fas fa-map-marker-alt"></i> Viloyat</label>
-                    <div class="select-picker" id="customerRegionPicker">
-                        <input type="hidden" id="customerRegion" required>
-                        <button type="button" class="select-trigger">
-                            <span class="select-trigger-label">Tanlang...</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <div class="select-dropdown">
-                            <!-- Dynamic -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerBirthday"><i class="fas fa-birthday-cake"></i> Tug'ilgan sana</label>
+                        <input type="date" id="customerBirthday">
+                    </div>
+                    <div class="form-group">
+                        <label for="customerRegion"><i class="fas fa-map-marker-alt"></i> Viloyat</label>
+                        <div class="select-picker" id="customerRegionPicker">
+                            <input type="hidden" id="customerRegion" required>
+                            <button type="button" class="select-trigger">
+                                <span class="select-trigger-label">Tanlang...</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="select-dropdown">
+                                <!-- Dynamic -->
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="customerAddress"><i class="fas fa-map-marked-alt"></i> Aniq manzil</label>
+                    <input type="text" id="customerAddress" placeholder="Ko'cha, uy raqami, mo'ljal">
                 </div>
                 <div class="form-group">
                     <label for="customerNote"><i class="fas fa-sticky-note"></i> Izoh</label>
@@ -794,6 +812,47 @@
                     <button type="submit" class="btn btn-primary">Saqlash</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Customer History Modal -->
+    <div class="modal-overlay" id="customerHistoryModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h2 id="historyModalTitle"><i class="fas fa-history"></i> Xaridlar tarixi: <span id="historyCustomerName"></span></h2>
+                <button class="modal-close" data-modal="customerHistoryModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="history-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div class="stat-mini-card" style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">Umumiy xaridlar</span>
+                        <span id="historyTotalSales" style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">0</span>
+                    </div>
+                    <div class="stat-mini-card" style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">Umumiy summa</span>
+                        <span id="historyTotalSpent" style="font-size: 1.2rem; font-weight: 700; color: var(--success);">0 so'm</span>
+                    </div>
+                    <div class="stat-mini-card" style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">Joriy qarz</span>
+                        <span id="historyTotalDebt" style="font-size: 1.2rem; font-weight: 700; color: var(--danger);">0 so'm</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Sana</th>
+                                <th>Mahsulotlar</th>
+                                <th>Summa</th>
+                                <th>Holat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerHistoryBody">
+                            <!-- Dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
