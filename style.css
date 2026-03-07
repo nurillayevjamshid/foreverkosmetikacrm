@@ -2205,7 +2205,7 @@ html[data-theme="light"] .image-upload-area {
 
 /* Limit expense list height so only ~2 items are visible, rest via scroll */
 .expense-card {
-    height: 240px;
+    height: 250px;
     display: flex;
     flex-direction: column;
 }
