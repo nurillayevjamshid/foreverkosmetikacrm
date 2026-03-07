@@ -1055,9 +1055,13 @@ function renderUsers(searchTerm) {
     tbody.innerHTML = filtered.map(function (u, i) {
         var uRole = (u.role && String(u.role).trim().toLowerCase() === 'admin');
         var roleBadge = uRole ? '<span class="status-badge active">Admin</span>' : '<span class="status-badge info">Manager</span>';
-        var pwd = u.password || '******';
-        var passwordHtml = '<div class="password-cell-inner">' +
-            '<span class="password-text" data-original="' + escapeHtml(pwd) + '">••••••••</span>' +
+        // Parolni bir necha xil nomlar bo'yicha tekshiramiz (password, parol, pass, userPassword)
+        var realPassword = u.password || u.parol || u.pass || u.userPassword;
+        var hasPassword = !!realPassword;
+        var pwdToShow = hasPassword ? realPassword : "Parol topilmadi";
+
+        var passwordHtml = '<div class="password-cell-inner' + (hasPassword ? '' : ' no-password') + '">' +
+            '<span class="password-text" data-original="' + escapeHtml(pwdToShow) + '" data-has-pwd="' + hasPassword + '">••••••••</span>' +
             '<button type="button" class="password-eye-btn" data-visible="false" title="Ko\'rsatish/Yashirish"><i class="fas fa-eye"></i></button>' +
             '</div>';
 
