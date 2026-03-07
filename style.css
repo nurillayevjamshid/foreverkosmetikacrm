@@ -2229,7 +2229,7 @@ html[data-theme="light"] .sale-items-add-btn {
 }
 
 .dashboard-main-grid .card {
-    height: 400px;
+    height: 420px;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -2286,7 +2286,7 @@ html[data-theme="light"] .scroll-fade::after {
 
 /* Limit expense list height so only ~2 items are visible, rest via scroll */
 .expense-card {
-    height: 250px;
+    height: 270px;
     display: flex;
     flex-direction: column;
     position: relative;
