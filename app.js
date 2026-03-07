@@ -55,7 +55,9 @@ function formatMoney(amount) {
 function formatDate(dateStr) {
     if (!dateStr) return '';
     var d = new Date(dateStr);
-    return d.toLocaleDateString('uz-UZ', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    if (isNaN(d.getTime())) return dateStr;
+    var months = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr'];
+    return d.getDate() + '-' + months[d.getMonth()] + '. ' + d.getFullYear();
 }
 
 function getTodayStr() {

@@ -2875,20 +2875,22 @@ html[data-theme="light"] .select-trigger {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
-    background: var(--accent-bg-soft);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sale-region-badge i {
     color: var(--accent);
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 700;
-    border: 1px solid var(--accent-border-soft);
+    opacity: 0.8;
 }
 
 .sale-items-wrap {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    max-width: 400px;
+    width: 280px;
+    /* Fixed width to keep column consistent */
 }
 
 .sale-row-item-tag {
@@ -2930,9 +2932,7 @@ html[data-theme="light"] .sale-row-item-tag {
 }
 
 html[data-theme="light"] .sale-region-badge {
-    background: #eff6ff;
-    border-color: #dbeafe;
-    color: #2563eb;
+    color: #475569;
 }
 
 html[data-theme="light"] .sale-user-name {
@@ -2955,15 +2955,16 @@ html[data-theme="light"] .data-table .amount-highlight {
 /* Sale Items Card Grouping */
 .sale-items-card {
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 12px;
-    padding: 6px;
+    border: 1.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 8px 12px;
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 140px;
+    width: 100%;
+    /* Uniform width inside the wrapper */
 }
 
 .sale-items-card:hover {
