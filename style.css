@@ -1340,11 +1340,14 @@ html[data-theme="light"] .form-group select option {
 .empty-state i {
     font-size: 48px;
     margin-bottom: 16px;
-    opacity: 0.3;
+    opacity: 0.5;
+    /* Increased from 0.3 */
 }
 
 .empty-state p {
-    font-size: 14px;
+    font-size: 15px;
+    /* Slightly larger */
+    font-weight: 500;
 }
 
 /* ===========================
@@ -1608,6 +1611,20 @@ html[data-theme="light"] {
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Specific Light Mode Visibility Tweaks */
+html[data-theme="light"] .page-subtitle,
+html[data-theme="light"] .logo-text,
+html[data-theme="light"] .user-name {
+    color: #1e293b;
+    /* Stronger dark for crucial headers */
+}
+
+html[data-theme="light"] .text-muted,
+html[data-theme="light"] .info-label {
+    color: #64748b;
+    /* Ensure it's not too light */
 }
 
 /* ===========================
@@ -3074,7 +3091,7 @@ html[data-theme="light"] .gallery-item {
    =========================== */
 .profile-header-card {
     background: var(--gradient-primary);
-    color: #fff;
+    color: var(--text);
     padding: 40px;
     border-radius: 24px;
     display: flex;
@@ -3085,6 +3102,17 @@ html[data-theme="light"] .gallery-item {
     overflow: hidden;
     border: 1px solid var(--accent-border-soft);
     box-shadow: var(--shadow-lg);
+}
+
+/* Ensure white text in dark theme for the header card */
+html:not([data-theme="light"]) .profile-header-card {
+    color: #fff;
+}
+
+/* Better gradient for light mode profile header to make it pop */
+html[data-theme="light"] .profile-header-card {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-hover) 100%);
+    border-color: var(--border);
 }
 
 .profile-avatar-big {
@@ -3108,10 +3136,11 @@ html[data-theme="light"] .gallery-item {
 }
 
 .profile-main-info h2 {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 5px;
-    color: #fff;
+    line-height: 1.2;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .profile-main-info p {
@@ -3151,9 +3180,9 @@ html[data-theme="light"] .gallery-item {
 }
 
 .info-value {
-    font-size: 15px;
+    font-size: 16px;
     color: var(--text);
-    font-weight: 500;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -3173,7 +3202,7 @@ html[data-theme="light"] .gallery-item {
 }
 
 .p-stat {
-    background: var(--surface-light);
+    background: var(--surface);
     padding: 24px;
     border-radius: 16px;
     border: 1px solid var(--border);
@@ -3181,26 +3210,40 @@ html[data-theme="light"] .gallery-item {
 }
 
 .p-stat:hover {
-    border-color: var(--accent-border-soft);
-    background: var(--surface-hover);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
     transform: translateY(-2px);
 }
 
 .p-stat-label {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-muted);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: block;
+    font-weight: 500;
 }
 
 .p-stat-value {
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 2.2rem;
+    font-weight: 800;
     color: var(--text);
+    line-height: 1;
 }
 
 .p-stat-value.accent {
     color: var(--accent);
+}
+
+/* Ensure labels are visible in light mode */
+html[data-theme="light"] .info-label,
+html[data-theme="light"] .p-stat-label {
+    color: #475569;
+    /* Slate 600 for better visibility than text-muted in light mode */
+}
+
+html[data-theme="light"] .info-value {
+    color: #0f172a;
+    /* Slate 900 */
 }
 
 @media (max-width: 1200px) {
@@ -3218,5 +3261,9 @@ html[data-theme="light"] .gallery-item {
 
     .performance-card {
         grid-template-columns: 1fr;
+    }
+
+    .profile-main-info h2 {
+        font-size: 2rem;
     }
 }
