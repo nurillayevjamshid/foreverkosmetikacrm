@@ -131,7 +131,8 @@ var pageConfig = {
     finance: { title: 'Kirim / Chiqim', subtitle: 'Moliyaviy operatsiyalar' },
     products: { title: 'Mahsulotlar', subtitle: "Mahsulotlar ro'yxati va boshqaruvi" },
     settings: { title: 'Sozlamalar', subtitle: 'Tizim sozlamalari boshqaruvi' },
-    staff: { title: 'Xodimlar', subtitle: 'Xodimlar va kirish huquqlari' }
+    staff: { title: 'Xodimlar', subtitle: 'Xodimlar va kirish huquqlari' },
+    customers: { title: 'Mijozlar', subtitle: 'Mijozlar bazasi va tarixi' }
 };
 
 function navigateTo(pageName) {
@@ -150,6 +151,7 @@ function navigateTo(pageName) {
     var overlay = document.querySelector('.sidebar-overlay');
     if (overlay) overlay.classList.remove('active');
     updateUIVisibility(pageName);
+    if (pageName === 'customers') renderCustomers();
 }
 
 function updateUIVisibility(currentPage) {
@@ -158,6 +160,7 @@ function updateUIVisibility(currentPage) {
     if (staffNavItem) {
         staffNavItem.style.display = 'block';
     }
+    initSelectPicker('customerRegionPicker', allRegions);
 }
 
 document.querySelectorAll('.nav-item').forEach(function (item) {
@@ -816,9 +819,26 @@ document.getElementById('saleForm').addEventListener('submit', function (e) {
 
             showToast("Yangi sotuv qo'shildi!");
             closeModal('saleModal');
+            // Update customer stats if applicable
+            updateCustomerStats(data.name, totalAmount);
         }).catch(function (err) { showToast('Xatolik: ' + err.message, 'error'); });
     }
 });
+
+function updateCustomerStats(customerName, amount) {
+    if (!customerName) return;
+    // Ism bo'yicha mijozni qidirish (sodda usul)
+    db.collection('customers').where('name', '==', customerName).get().then(function(snapshot) {
+        snapshot.forEach(function(doc) {
+            var c = doc.data();
+            db.collection('customers').doc(doc.id).update({
+                salesCount: (c.salesCount || 0) + 1,
+                totalSpent: (c.totalSpent || 0) + amount,
+                lastPurchaseDate: new Date().toISOString()
+            });
+        });
+    });
+}
 
 // ==========================================
 // === FINANCE CRUD ===
@@ -1504,3 +1524,114 @@ imageUploadArea.addEventListener('drop', function (e) {
     productImageInput.dispatchEvent(new Event('change'));
 });
 
+
+// ==========================================
+// === CUSTOMERS MANAGEMENT ===
+// ==========================================
+
+// Mijozlar ro'yxatini yuklash va ko'rsatish
+function renderCustomers(searchQuery) {
+    var customersBody = document.getElementById('customersBody');
+    var customersEmpty = document.getElementById('customersEmpty');
+    if (!customersBody) return;
+
+    db.collection('customers').orderBy('createdAt', 'desc').onSnapshot(function (snapshot) {
+        var customers = [];
+        snapshot.forEach(function (doc) {
+            var data = doc.data();
+            data.id = doc.id;
+            if (!searchQuery || 
+                data.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                data.phone.includes(searchQuery)) {
+                customers.push(data);
+            }
+        });
+
+        if (customers.length === 0) {
+            customersBody.innerHTML = '';
+            customersEmpty.style.display = 'block';
+        } else {
+            customersEmpty.style.display = 'none';
+            customersBody.innerHTML = customers.map(function (c, i) {
+                return '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + escapeHtml(c.name) + '</td>' +
+                    '<td>' + escapeHtml(c.phone) + '</td>' +
+                    '<td>' + escapeHtml(c.region || '-') + '</td>' +
+                    '<td>' + (c.salesCount || 0) + '</td>' +
+                    '<td>' + formatMoney(c.totalSpent || 0) + '</td>' +
+                    '<td>' +
+                    '<button class="btn-icon edit customer-edit-btn" data-id="' + c.id + '"><i class="fas fa-pen"></i></button>' +
+                    '<button class="btn-icon delete customer-delete-btn" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '"><i class="fas fa-trash"></i></button>' +
+                    '</td>' +
+                    '</tr>';
+            }).join('');
+        }
+    });
+}
+
+// Mijoz qo'shish tugmasi
+document.getElementById('addCustomerBtn').addEventListener('click', function () {
+    document.getElementById('customerForm').reset();
+    document.getElementById('customerId').value = '';
+    document.getElementById('customerModalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Yangi Mijoz';
+    setSelectValue('customerRegionPicker', '', 'Tanlang...');
+    openModal('customerModal');
+});
+
+// Mijozni saqlash
+document.getElementById('customerForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var id = document.getElementById('customerId').value;
+    var data = {
+        name: document.getElementById('customerName').value.trim(),
+        phone: document.getElementById('customerPhone').value.trim(),
+        region: document.getElementById('customerRegion').value,
+        note: document.getElementById('customerNote').value.trim(),
+        updatedAt: new Date().toISOString()
+    };
+
+    if (id) {
+        db.collection('customers').doc(id).update(data)
+            .then(function () { showToast('Mijoz ma\'lumotlari yangilandi'); closeModal('customerModal'); })
+            .catch(function (err) { showToast('Xatolik: ' + err.message, 'error'); });
+    } else {
+        data.createdAt = new Date().toISOString();
+        data.salesCount = 0;
+        data.totalSpent = 0;
+        db.collection('customers').add(data)
+            .then(function () { showToast('Yangi mijoz qo\'shildi'); closeModal('customerModal'); })
+            .catch(function (err) { showToast('Xatolik: ' + err.message, 'error'); });
+    }
+});
+
+// Mijozni tahrirlash va o'chirish delegatsiyasi
+document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.customer-edit-btn');
+    if (btn) {
+        var id = btn.dataset.id;
+        db.collection('customers').doc(id).get().then(function (doc) {
+            if (doc.exists) {
+                var c = doc.data();
+                document.getElementById('customerId').value = id;
+                document.getElementById('customerName').value = c.name;
+                document.getElementById('customerPhone').value = c.phone;
+                document.getElementById('customerNote').value = c.note || '';
+                setSelectValue('customerRegionPicker', c.region, c.region);
+                document.getElementById('customerModalTitle').innerHTML = '<i class="fas fa-pen"></i> Mijozni tahrirlash';
+                openModal('customerModal');
+            }
+        });
+        return;
+    }
+
+    btn = e.target.closest('.customer-delete-btn');
+    if (btn) {
+        deleteItem('customers', btn.dataset.id, btn.dataset.name);
+    }
+});
+
+// Qidiruv
+document.getElementById('customersSearch').addEventListener('input', function (e) {
+    renderCustomers(e.target.value);
+});

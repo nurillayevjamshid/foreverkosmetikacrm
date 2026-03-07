@@ -43,6 +43,12 @@
                     <span>Sotuvlar</span>
                 </a>
             </li>
+            <li class="nav-item" data-page="customers">
+                <a href="#" class="nav-link" id="nav-customers">
+                    <i class="fas fa-address-book"></i>
+                    <span>Mijozlar</span>
+                </a>
+            </li>
             <li class="nav-item" data-page="finance">
                 <a href="#" class="nav-link" id="nav-finance">
                     <i class="fas fa-wallet"></i>
@@ -258,6 +264,45 @@
                         <div class="empty-state" id="salesEmpty" style="display:none;">
                             <i class="fas fa-shopping-cart"></i>
                             <p>Hali sotuvlar yo'q. "Yangi Sotuv" tugmasini bosing.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============== CUSTOMERS PAGE ============== -->
+            <section class="page" id="page-customers">
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="addCustomerBtn">
+                        <i class="fas fa-user-plus"></i> Yangi Mijoz
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="customersSearch" placeholder="Qidirish...">
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table" id="customersTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Mijoz ismi</th>
+                                        <th>Telefon</th>
+                                        <th>Viloyat</th>
+                                        <th>Sotuvlar soni</th>
+                                        <th>Umumiy savdo</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customersBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="customersEmpty" style="display:none;">
+                            <i class="fas fa-address-book"></i>
+                            <p>Hali mijozlar yo'q. "Yangi Mijoz" tugmasini bosing.</p>
                         </div>
                     </div>
                 </div>
@@ -705,6 +750,48 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-modal="userModal">Bekor qilish</button>
                     <button type="submit" class="btn btn-primary" id="createUserBtn">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Modal -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="customerModalTitle"><i class="fas fa-user-plus"></i> Yangi Mijoz</h2>
+                <button class="modal-close" data-modal="customerModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="customerForm" class="modal-body">
+                <input type="hidden" id="customerId">
+                <div class="form-group">
+                    <label for="customerName"><i class="fas fa-user"></i> Mijoz ismi</label>
+                    <input type="text" id="customerName" placeholder="To'liq ismini kiriting" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone"><i class="fas fa-phone"></i> Telefon raqami</label>
+                    <input type="tel" id="customerPhone" placeholder="+998 90 123 45 67" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerRegion"><i class="fas fa-map-marker-alt"></i> Viloyat</label>
+                    <div class="select-picker" id="customerRegionPicker">
+                        <input type="hidden" id="customerRegion" required>
+                        <button type="button" class="select-trigger">
+                            <span class="select-trigger-label">Tanlang...</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="select-dropdown">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="customerNote"><i class="fas fa-sticky-note"></i> Izoh</label>
+                    <textarea id="customerNote" rows="2" placeholder="Mijoz haqida qo'shimcha ma'lumot..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal="customerModal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
                 </div>
             </form>
         </div>
