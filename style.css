@@ -2104,22 +2104,31 @@ html[data-theme="light"] .image-upload-area {
 .password-cell-inner {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    width: fit-content;
 }
 
 .password-text {
-    font-family: monospace;
-    font-size: 14px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
     letter-spacing: 1px;
-    min-width: 80px;
+    color: var(--text-secondary);
+    min-width: 90px;
 }
 
 .password-eye-btn {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text-muted);
     cursor: pointer;
-    padding: 4px;
+    padding: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2128,8 +2137,18 @@ html[data-theme="light"] .image-upload-area {
 
 .password-eye-btn:hover {
     color: var(--accent);
+    background: var(--accent-bg-soft);
+    border-color: var(--accent-border-soft);
+    transform: scale(1.05);
 }
 
 .password-eye-btn.active {
     color: var(--accent);
+    background: var(--accent-bg-mid);
+    border-color: var(--accent-border-mid);
+    box-shadow: var(--shadow-glow);
+}
+
+.password-eye-btn i {
+    font-size: 14px;
 }

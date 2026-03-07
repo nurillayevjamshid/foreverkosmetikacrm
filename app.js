@@ -1058,7 +1058,7 @@ function renderUsers(searchTerm) {
         var pwd = u.password || '******';
         var passwordHtml = '<div class="password-cell-inner">' +
             '<span class="password-text" data-original="' + escapeHtml(pwd) + '">••••••••</span>' +
-            '<button type="button" class="password-eye-btn" title="Ko\'rsatish/Yashirish"><i class="fas fa-eye"></i></button>' +
+            '<button type="button" class="password-eye-btn" data-visible="false" title="Ko\'rsatish/Yashirish"><i class="fas fa-eye"></i></button>' +
             '</div>';
 
         return '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(u.name) + '</td><td>' + escapeHtml(u.email) + '</td><td>' + passwordHtml + '</td><td>' + roleBadge + '</td><td>' + formatDate(u.createdAt) + '</td>' +
@@ -1093,15 +1093,18 @@ document.addEventListener('click', function (e) {
         var txt = wrap.querySelector('.password-text');
         var icon = eyeBtn.querySelector('i');
         var original = txt.getAttribute('data-original');
+        var isVisible = eyeBtn.getAttribute('data-visible') === 'true';
 
-        if (txt.textContent.includes('•')) {
+        if (!isVisible) {
             txt.textContent = original;
             icon.classList.replace('fa-eye', 'fa-eye-slash');
             eyeBtn.classList.add('active');
+            eyeBtn.setAttribute('data-visible', 'true');
         } else {
             txt.textContent = '••••••••';
             icon.classList.replace('fa-eye-slash', 'fa-eye');
             eyeBtn.classList.remove('active');
+            eyeBtn.setAttribute('data-visible', 'false');
         }
     }
 });
