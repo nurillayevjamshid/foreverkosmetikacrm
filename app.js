@@ -666,17 +666,22 @@ function renderSales(searchTerm) {
         var items = s.items || [];
         var itemsHtml = items.map(function (it) {
             var p = productsArr.find(function (px) { return px.id === it.productId; });
-            var pname = p ? escapeHtml(p.name) : 'вЂ”';
-            return pname + ' (x' + it.quantity + ')';
-        }).join(', ');
+            var pname = p ? escapeHtml(p.name) : '—';
+            return '<span class="sale-row-item-tag">' + pname + ' <span class="qty">x' + it.quantity + '</span></span>';
+        }).join('');
 
-        if (items.length > 2) {
-            itemsHtml = items.length + ' x Mahsulot';
+        if (items.length > 3) {
+            itemsHtml = '<span class="sale-row-items-count"><i class="fas fa-boxes-stacked"></i> ' + items.length + ' ta mahsulot</span>';
         }
 
-        return '<tr><td>' + (i + 1) + '</td><td>' + formatDate(s.date) + '</td><td>' + escapeHtml(s.name || '—') + '</td><td>' + escapeHtml(s.region || '—') + '</td><td title="' + (items.length > 2 ? items.map(function (it) { var p = productsArr.find(function (px) { return px.id === it.productId; }); return (p ? p.name : '—') + ' (x' + it.quantity + ')'; }).join(', ') : '') + '">' + itemsHtml + '</td><td class="amount-highlight">' + formatMoney(s.totalAmount) + '</td>' +
-            '<td><button class="btn-icon edit sale-edit-btn" data-id="' + s.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
-            '<button class="btn-icon delete sale-delete-btn" data-id="' + s.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button></td></tr>';
+        var fullItemsText = items.map(function (it) {
+            var p = productsArr.find(function (px) { return px.id === it.productId; });
+            return (p ? p.name : '—') + ' (x' + it.quantity + ')';
+        }).join(', ');
+
+        return '<tr class="sale-data-row"><td>' + (i + 1) + '</td><td><div class="sale-date-cell"><i class="far fa-calendar-alt"></i> ' + formatDate(s.date) + '</div></td><td><span class="sale-user-name">' + escapeHtml(s.name || '—') + '</span></td><td><div class="sale-region-badge"><i class="fas fa-location-dot"></i> ' + escapeHtml(s.region || '—') + '</div></td><td title="' + fullItemsText + '"><div class="sale-items-wrap">' + itemsHtml + '</div></td><td class="amount-highlight">' + formatMoney(s.totalAmount) + '</td>' +
+            '<td><div class="sale-actions-wrap"><button class="btn-icon edit sale-edit-btn" data-id="' + s.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
+            '<button class="btn-icon delete sale-delete-btn" data-id="' + s.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button></div></td></tr>';
     }).join('');
 }
 

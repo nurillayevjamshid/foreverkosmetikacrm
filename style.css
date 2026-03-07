@@ -592,40 +592,81 @@ body {
 
 .data-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    margin-top: -10px;
+    /* Offset the first row spacing */
 }
 
 .data-table thead th {
-    padding: 12px 16px;
+    padding: 12px 20px;
     text-align: left;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-}
-
-.data-table tbody td {
-    padding: 14px 16px;
-    font-size: 14px;
-    color: var(--text-secondary);
-    border-bottom: 1px solid var(--border);
+    letter-spacing: 1px;
+    border: none;
     white-space: nowrap;
 }
 
 .data-table tbody tr {
-    transition: var(--transition-fast);
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .data-table tbody tr:hover {
-    background: var(--surface-hover);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-.data-table tbody tr:last-child td {
-    border-bottom: none;
+.data-table tbody td {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    white-space: nowrap;
 }
+
+/* Rounded corners for the "Card" rows */
+.data-table tbody tr td:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.03);
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+}
+
+.data-table tbody tr td:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.03);
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+}
+
+html[data-theme="light"] .data-table tbody tr {
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme="light"] .data-table tbody tr:hover {
+    background: #f8fafc;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="light"] .data-table tbody td {
+    border-top: 1.5px solid #f1f5f9;
+    border-bottom: 1.5px solid #f1f5f9;
+}
+
+html[data-theme="light"] .data-table tbody tr td:first-child {
+    border-left: 1.5px solid #f1f5f9;
+}
+
+html[data-theme="light"] .data-table tbody tr td:last-child {
+    border-right: 1.5px solid #f1f5f9;
+}
+
 
 /* ===========================
    Page Actions Bar
@@ -2807,4 +2848,106 @@ html[data-theme="light"] .select-trigger {
 
 .select-option.selected i {
     color: var(--accent);
+}
+
+/* Premium Sales Table Row Customizations */
+.sale-date-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.sale-date-cell i {
+    color: var(--accent);
+    opacity: 0.8;
+}
+
+.sale-user-name {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+.sale-region-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--accent-bg-soft);
+    color: var(--accent);
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--accent-border-soft);
+}
+
+.sale-items-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 400px;
+}
+
+.sale-row-item-tag {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 2px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.sale-row-item-tag .qty {
+    color: var(--accent);
+    font-weight: 800;
+    margin-left: 4px;
+}
+
+.sale-row-items-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+}
+
+.sale-actions-wrap {
+    display: flex;
+    gap: 8px;
+}
+
+html[data-theme="light"] .sale-row-item-tag {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #475569;
+}
+
+html[data-theme="light"] .sale-region-badge {
+    background: #eff6ff;
+    border-color: #dbeafe;
+    color: #2563eb;
+}
+
+html[data-theme="light"] .sale-user-name {
+    color: #1e293b;
+}
+
+/* Specific highlight for sum */
+.data-table .amount-highlight {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="light"] .data-table .amount-highlight {
+    color: #0f172a;
+    text-shadow: none;
 }
