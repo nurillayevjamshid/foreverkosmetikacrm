@@ -2250,27 +2250,10 @@ html[data-theme="light"] .sale-items-add-btn {
     }
 }
 
-/* Premium Scroll Fade Effect */
-.scroll-fade {
-    position: relative;
-}
-
-.scroll-fade::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background: linear-gradient(to top, var(--surface), transparent);
-    pointer-events: none;
-    z-index: 5;
-    border-bottom-left-radius: var(--radius-lg);
-    border-bottom-right-radius: var(--radius-lg);
-}
-
-html[data-theme="light"] .scroll-fade::after {
-    background: linear-gradient(to top, #ffffff, transparent);
+@media (max-width: 1100px) {
+    .dashboard-main-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 
@@ -2280,8 +2263,6 @@ html[data-theme="light"] .scroll-fade::after {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding-bottom: 40px;
-    /* Space for the fade effect */
 }
 
 /* Limit expense list height so only ~2 items are visible, rest via scroll */
@@ -2505,8 +2486,6 @@ html[data-theme="light"] .tooltip-value {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding-bottom: 40px;
-    /* Space for the fade effect */
 }
 
 .top-item {
@@ -2588,8 +2567,6 @@ html[data-theme="light"] .top-item:hover {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding-bottom: 40px;
-    /* Space for the fade effect */
 }
 
 .demographic-item {
