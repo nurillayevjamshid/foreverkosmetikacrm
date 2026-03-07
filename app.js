@@ -1420,7 +1420,7 @@ document.addEventListener('click', function (e) {
     // Staff row click navigation
     var userRow = e.target.closest('.user-data-row');
     if (userRow && !e.target.closest('.btn-icon') && !e.target.closest('.password-eye-btn') && !e.target.closest('.user-edit-btn') && !e.target.closest('.user-delete-btn')) {
-        window.location.href = 'managerpage.html';
+        navigateTo('profile');
     }
 });
 
