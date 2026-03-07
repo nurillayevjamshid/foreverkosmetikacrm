@@ -1759,3 +1759,21 @@ function showCustomerHistory(customerId, customerName) {
 document.getElementById('customersSearch').addEventListener('input', function (e) {
     renderCustomers(e.target.value);
 });
+
+// Profile Tabs Handler
+document.addEventListener('click', function (e) {
+    var tabBtn = e.target.closest('.profile-tab-btn');
+    if (tabBtn) {
+        var tabId = tabBtn.dataset.tabId;
+
+        // Update Buttons
+        document.querySelectorAll('.profile-tab-btn').forEach(function (btn) {
+            btn.classList.toggle('active', btn === tabBtn);
+        });
+
+        // Update Content
+        document.querySelectorAll('.tab-content').forEach(function (content) {
+            content.classList.toggle('active', content.id === tabId);
+        });
+    }
+});

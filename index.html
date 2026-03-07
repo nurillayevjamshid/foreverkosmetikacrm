@@ -512,52 +512,64 @@
                     <div class="profile-avatar-big">
                         <i class="fas fa-user-astronaut"></i>
                     </div>
-                    <div class="profile-main-info">
+                    <div class="profile-main-info" style="flex: 1;">
                         <h2 id="profileName">Yuklanmoqda...</h2>
                         <p id="profileRoleText"><i class="fas fa-shield-halved"></i> Menejer</p>
+
+                        <!-- Profile Tabs -->
+                        <div class="profile-tabs-container">
+                            <button class="profile-tab-btn active" data-tab-id="tab-info">
+                                <i class="fas fa-info-circle"></i> Asosiy
+                            </button>
+                            <button class="profile-tab-btn" data-tab-id="tab-stats">
+                                <i class="fas fa-chart-pie"></i> Statistika
+                            </button>
+                            <button class="profile-tab-btn" data-tab-id="tab-history">
+                                <i class="fas fa-history"></i> Tarix
+                            </button>
+                            <button class="profile-tab-btn" data-tab-id="tab-settings">
+                                <i class="fas fa-cog"></i> Sozlamalar
+                            </button>
+                        </div>
                     </div>
                     <div class="stat-decoration"></div>
                     <div class="stat-decoration" style="left: -20px; bottom: -20px; width: 100px; height: 100px;"></div>
                 </div>
 
-                <div class="profile-grid">
-                    <!-- Profile Details Sidebar -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fas fa-info-circle"></i> Ma'lumotlar</h2>
-                        </div>
-                        <div class="card-body">
-                            <ul class="info-list">
-                                <li class="info-item">
-                                    <span class="info-label">E-mail Manzil</span>
-                                    <span class="info-value" id="infoEmail">---</span>
-                                </li>
-                                <li class="info-item">
-                                    <span class="info-label">Telefon Raqam</span>
-                                    <span class="info-value" id="infoPhone"><i class="fas fa-phone"></i>
-                                        Belgilanmagan</span>
-                                </li>
-                                <li class="info-item">
-                                    <span class="info-label">Rol</span>
-                                    <span class="info-value" id="infoRole">---</span>
-                                </li>
-                                <li class="info-item">
-                                    <span class="info-label">Tizimdagi ID</span>
-                                    <span class="info-value" id="infoUid"
-                                        style="font-family: monospace; font-size: 12px; opacity: 0.6;">---</span>
-                                </li>
-                            </ul>
-                            <div style="margin-top: 32px;">
-                                <button id="logoutBtnProfile" class="btn btn-danger"
-                                    style="width: 100%; justify-content: center;">
-                                    <i class="fas fa-sign-out-alt"></i> Tizimdan chiqish
-                                </button>
+                <div class="profile-tabs-content">
+                    <!-- Tab 1: Info -->
+                    <div class="tab-content active" id="tab-info">
+                        <div class="card" style="max-width: 600px;">
+                            <div class="card-header">
+                                <h2><i class="fas fa-user-tag"></i> Shaxsiy ma'lumotlar</h2>
+                            </div>
+                            <div class="card-body">
+                                <ul class="info-list">
+                                    <li class="info-item">
+                                        <span class="info-label">E-mail Manzil</span>
+                                        <span class="info-value" id="infoEmail">---</span>
+                                    </li>
+                                    <li class="info-item">
+                                        <span class="info-label">Telefon Raqam</span>
+                                        <span class="info-value" id="infoPhone"><i class="fas fa-phone"></i>
+                                            Belgilanmagan</span>
+                                    </li>
+                                    <li class="info-item">
+                                        <span class="info-label">Rol</span>
+                                        <span class="info-value" id="infoRole">---</span>
+                                    </li>
+                                    <li class="info-item">
+                                        <span class="info-label">Tizimdagi ID</span>
+                                        <span class="info-value" id="infoUid"
+                                            style="font-family: monospace; font-size: 12px; opacity: 0.6;">---</span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Main Content Area -->
-                    <div class="profile-main-content">
+                    <!-- Tab 2: Stats -->
+                    <div class="tab-content" id="tab-stats">
                         <div class="performance-card">
                             <div class="p-stat">
                                 <span class="p-stat-label">Sotuvlar soni</span>
@@ -568,18 +580,43 @@
                                 <div class="p-stat-value accent" id="statSalesVolume">0 so'm</div>
                             </div>
                         </div>
+                    </div>
 
+                    <!-- Tab 3: History -->
+                    <div class="tab-content" id="tab-history">
                         <div class="card">
                             <div class="card-header">
-                                <h2><i class="fas fa-clock-rotate-left"></i> So'nggi amallaringiz</h2>
+                                <h2><i class="fas fa-clock-rotate-left"></i> So'nggi amallar</h2>
                             </div>
                             <div class="card-body">
-                                <div class="empty-state" style="padding: 60px 20px;">
+                                <div id="profileActivityFeed" class="empty-state" style="padding: 60px 20px;">
                                     <i class="fas fa-folder-open"
                                         style="font-size: 3rem; margin-bottom: 20px; opacity: 0.2;"></i>
                                     <p>Hozircha malumotlar yo'q</p>
                                     <span style="font-size: 13px; color: var(--text-muted);">Siz amalga oshirgan so'nggi
-                                        5 ta sotuv va o'zgarishlar bu yerda ko'rinadi.</span>
+                                        amallar bu yerda ko'rinadi.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Settings -->
+                    <div class="tab-content" id="tab-settings">
+                        <div class="card" style="max-width: 500px;">
+                            <div class="card-header">
+                                <h2><i class="fas fa-shield-alt"></i> Xavfsizlik va chiqish</h2>
+                            </div>
+                            <div class="card-body">
+                                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 24px;">
+                                    Hisoabingiz boshqaruvi va xavfsizlik sozlamalari.</p>
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                                        <i class="fas fa-key"></i> Parolni yangilash
+                                    </button>
+                                    <button id="logoutBtnProfile" class="btn btn-danger"
+                                        style="width: 100%; justify-content: center;">
+                                        <i class="fas fa-sign-out-alt"></i> Tizimdan chiqish
+                                    </button>
                                 </div>
                             </div>
                         </div>
