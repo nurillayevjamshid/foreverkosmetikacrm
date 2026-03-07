@@ -949,7 +949,18 @@ function initUzbMap() {
                     var tooltip = document.getElementById('mapTooltip');
                     var name = this.getAttribute('data-region') || "Noma'lum";
                     var count = this.getAttribute('data-count') || 0;
-                    tooltip.innerHTML = '<strong>' + name + '</strong> ' + count + ' ta sotuv';
+                    var sum = parseFloat(this.getAttribute('data-sum') || 0);
+
+                    tooltip.innerHTML = '<strong>' + name + '</strong>' +
+                        '<div class="tooltip-row">' +
+                        '<span class="tooltip-label">Sotuvlar soni:</span>' +
+                        '<span class="tooltip-value">' + count + ' ta</span>' +
+                        '</div>' +
+                        '<div class="tooltip-row">' +
+                        '<span class="tooltip-label">Umumiy summa:</span>' +
+                        '<span class="tooltip-value tooltip-sum">' + formatMoney(sum) + '</span>' +
+                        '</div>';
+
                     tooltip.style.display = 'block';
                     tooltip.style.left = e.pageX + 15 + 'px';
                     tooltip.style.top = e.pageY + 15 + 'px';
@@ -1023,19 +1034,23 @@ function refreshDashboard() {
     }
 
     // 2. MAP: Region stats
-    var regionStats = {};
+    var regionCount = {};
+    var regionSum = {};
     var maxSales = 0;
     salesArr.forEach(function (s) {
         var r = s.region || "Noma'lum";
-        regionStats[r] = (regionStats[r] || 0) + 1;
-        if (regionStats[r] > maxSales) maxSales = regionStats[r];
+        regionCount[r] = (regionCount[r] || 0) + 1;
+        regionSum[r] = (regionSum[r] || 0) + (s.totalAmount || 0);
+        if (regionCount[r] > maxSales) maxSales = regionCount[r];
     });
 
     // Update Map paths
     document.querySelectorAll('.map-path').forEach(function (p) {
         var r = p.getAttribute('data-region');
-        var count = regionStats[r] || 0;
+        var count = regionCount[r] || 0;
+        var sum = regionSum[r] || 0;
         p.setAttribute('data-count', count);
+        p.setAttribute('data-sum', sum);
         p.classList.toggle('has-data', count > 0);
         p.classList.toggle('top-region', count > 0 && count === maxSales);
     });
