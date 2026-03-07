@@ -563,7 +563,9 @@ function renderSales(searchTerm) {
     if (searchTerm) {
         var q = searchTerm.toLowerCase();
         filtered = filtered.filter(function (s) {
-            return (s.name && s.name.toLowerCase().includes(q)) || s.date.includes(q);
+            return (s.name && s.name.toLowerCase().includes(q)) ||
+                (s.region && s.region.toLowerCase().includes(q)) ||
+                s.date.includes(q);
         });
     }
     if (filtered.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
@@ -580,7 +582,7 @@ function renderSales(searchTerm) {
             itemsHtml = items.length + ' x Mahsulot';
         }
 
-        return '<tr><td>' + (i + 1) + '</td><td>' + formatDate(s.date) + '</td><td>' + escapeHtml(s.name || 'вЂ”') + '</td><td title="' + (items.length > 2 ? items.map(function (it) { var p = productsArr.find(function (px) { return px.id === it.productId; }); return (p ? p.name : 'вЂ”') + ' (x' + it.quantity + ')'; }).join(', ') : '') + '">' + itemsHtml + '</td><td class="amount-highlight">' + formatMoney(s.totalAmount) + '</td>' +
+        return '<tr><td>' + (i + 1) + '</td><td>' + formatDate(s.date) + '</td><td>' + escapeHtml(s.name || '—') + '</td><td>' + escapeHtml(s.region || '—') + '</td><td title="' + (items.length > 2 ? items.map(function (it) { var p = productsArr.find(function (px) { return px.id === it.productId; }); return (p ? p.name : '—') + ' (x' + it.quantity + ')'; }).join(', ') : '') + '">' + itemsHtml + '</td><td class="amount-highlight">' + formatMoney(s.totalAmount) + '</td>' +
             '<td><button class="btn-icon edit sale-edit-btn" data-id="' + s.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
             '<button class="btn-icon delete sale-delete-btn" data-id="' + s.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button></td></tr>';
     }).join('');
@@ -592,6 +594,7 @@ function editSale(id) {
     document.getElementById('saleId').value = s.id;
     document.getElementById('saleDate').value = s.date;
     document.getElementById('saleName').value = s.name || '';
+    document.getElementById('saleRegion').value = s.region || '';
     document.getElementById('saleNote').value = s.note || '';
 
     // Clear and fill rows
@@ -646,6 +649,7 @@ document.getElementById('saleForm').addEventListener('submit', function (e) {
     var data = {
         date: document.getElementById('saleDate').value,
         name: document.getElementById('saleName').value.trim(),
+        region: document.getElementById('saleRegion').value,
         items: items,
         totalAmount: totalAmount,
         note: document.getElementById('saleNote').value.trim(),
