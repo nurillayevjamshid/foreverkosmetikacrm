@@ -874,7 +874,66 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
 // ==========================================
 // === DASHBOARD ===
 // ==========================================
+// Xaritani bir marta yuklash va hududlarni sozlash
+var isMapInitialized = false;
+function initUzbMap() {
+    if (isMapInitialized) return;
+    var container = document.getElementById('uzbMapContainer');
+    if (!container) return;
+
+    fetch('uzbekistan.svg').then(function (res) { return res.text(); }).then(function (svgCode) {
+        container.innerHTML = svgCode;
+        var svg = container.querySelector('svg');
+        if (svg) {
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', 'auto');
+            var paths = svg.querySelectorAll('path');
+            paths.forEach(function (p) {
+                p.classList.add('map-path');
+                // ID-ni chiroyli nomga aylantirish (mapping)
+                var id = p.id;
+                var regionName = "";
+                if (id === 'andijan') regionName = "Andijon";
+                else if (id === 'bukhara') regionName = "Buxoro";
+                else if (id === 'fergana') regionName = "Farg'ona";
+                else if (id === 'jizzakh') regionName = "Jizzax";
+                else if (id === 'namangan') regionName = "Namangan";
+                else if (id === 'navoiy') regionName = "Navoiy";
+                else if (id === 'qashqadaryo') regionName = "Qashqadaryo";
+                else if (id === 'karakalpakstan') regionName = "Qoraqalpog'iston";
+                else if (id === 'samarqand') regionName = "Samarqand";
+                else if (id === 'sirdaryo') regionName = "Sirdaryo";
+                else if (id === 'surxondaryo') regionName = "Surxondaryo";
+                else if (id === 'xorazm') regionName = "Xorazm";
+                else if (id === 'tashkent') regionName = "Toshkent shahri"; // Default
+                p.setAttribute('data-region', regionName);
+
+                // Tooltip events
+                p.addEventListener('mousemove', function (e) {
+                    var tooltip = document.getElementById('mapTooltip');
+                    var name = this.getAttribute('data-region');
+                    var count = this.getAttribute('data-count') || 0;
+                    tooltip.innerHTML = '<strong>' + name + '</strong>' + count + ' ta sotuv';
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = e.pageX + 10 + 'px';
+                    tooltip.style.top = e.pageY + 10 + 'px';
+                });
+                p.addEventListener('mouseleave', function () {
+                    document.getElementById('mapTooltip').style.display = 'none';
+                });
+            });
+        }
+        isMapInitialized = true;
+        refreshDashboard(); // SVG yuklangandan so'ng qayta yangilash
+    });
+}
+
+// Chart instance globalda saqlanadi
+var salesChart = null;
+
 function refreshDashboard() {
+    if (!isMapInitialized) { initUzbMap(); return; }
+
     var inc = financesArr.filter(function (f) { return f.type === 'income'; }).reduce(function (s, f) { return s + f.amount; }, 0);
     var exp = financesArr.filter(function (f) { return f.type === 'expense'; }).reduce(function (s, f) { return s + f.amount; }, 0);
 
@@ -883,21 +942,134 @@ function refreshDashboard() {
     document.getElementById('totalProfit').textContent = formatMoney(inc - exp);
     document.getElementById('totalSalesCount').textContent = salesArr.length;
 
-    // Expense list on dashboard
-    var expenses = financesArr.filter(function (f) { return f.type === 'expense'; }).sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
+    // 1. CHART: Sales Dynamics (Last 6 Months)
+    var ctx = document.getElementById('salesDynamicsChart');
+    if (ctx) {
+        var months = [];
+        var values = [];
+        var now = new Date();
+        for (var i = 5; i >= 0; i--) {
+            var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            var mName = d.toLocaleString('uz-UZ', { month: 'short' });
+            months.push(mName);
+
+            var monthSales = salesArr.filter(function (s) {
+                var sd = new Date(s.date);
+                return sd.getMonth() === d.getMonth() && sd.getFullYear() === d.getFullYear();
+            }).reduce(function (sum, s) { return sum + (s.totalAmount || 0); }, 0);
+            values.push(monthSales);
+        }
+
+        if (salesChart) salesChart.destroy();
+        salesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Sotuv summasi',
+                    data: values,
+                    backgroundColor: 'rgba(99, 102, 241, 0.5)',
+                    borderColor: '#6366f1',
+                    borderWidth: 2,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                }
+            }
+        });
+    }
+
+    // 2. MAP: Region stats
+    var regionStats = {};
+    var maxSales = 0;
+    salesArr.forEach(function (s) {
+        var r = s.region || "Noma'lum";
+        regionStats[r] = (regionStats[r] || 0) + 1;
+        if (regionStats[r] > maxSales) maxSales = regionStats[r];
+    });
+
+    // Update Map paths
+    document.querySelectorAll('.map-path').forEach(function (p) {
+        var r = p.getAttribute('data-region');
+        var count = regionStats[r] || 0;
+        p.setAttribute('data-count', count);
+        p.classList.toggle('has-data', count > 0);
+        p.classList.toggle('top-region', count > 0 && count === maxSales);
+    });
+
+    // 3. REGIONS LIST
+    var demoList = document.getElementById('demographicsList');
+    if (demoList) {
+        var sortedRegions = Object.keys(regionStats).sort(function (a, b) { return regionStats[b] - regionStats[a]; }).slice(0, 5);
+        if (sortedRegions.length === 0) {
+            demoList.innerHTML = '<p class="text-muted" style="text-align:center; padding:20px;">Hali sotuvlar geografiyasi shakllanmagan</p>';
+        } else {
+            demoList.innerHTML = sortedRegions.map(function (r) {
+                var count = regionStats[r];
+                var percent = Math.round((count / (salesArr.length || 1)) * 100);
+                return '<div class="demographic-item">' +
+                    '<div class="region-icon"><i class="fas fa-location-dot"></i></div>' +
+                    '<div class="region-info">' +
+                    '<span class="region-name">' + escapeHtml(r) + '</span>' +
+                    '<span class="region-count">' + count + ' ta sotuv</span>' +
+                    '</div>' +
+                    '<div class="region-progress-wrap">' +
+                    '<div class="region-progress-bar"><div class="region-progress-fill" style="width: ' + percent + '%"></div></div>' +
+                    '<span class="region-percent">' + percent + '%</span>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+    }
+
+    // 4. TOP PRODUCTS
+    var prodStats = {};
+    salesArr.forEach(function (s) {
+        (s.items || []).forEach(function (it) {
+            prodStats[it.productId] = (prodStats[it.productId] || 0) + (it.quantity || 0);
+        });
+    });
+
+    var topListEl = document.getElementById('topProductsList');
+    if (topListEl) {
+        var sortedProds = Object.keys(prodStats).sort(function (a, b) { return prodStats[b] - prodStats[a]; }).slice(0, 5);
+        if (sortedProds.length === 0) {
+            topListEl.innerHTML = '<p class="text-muted" style="text-align:center; padding:10px;">Ma\'lumot yo\'q</p>';
+        } else {
+            topListEl.innerHTML = sortedProds.map(function (pid, index) {
+                var product = productsArr.find(function (p) { return p.id === pid; });
+                var name = product ? product.name : "Noma'lum";
+                var qty = prodStats[pid];
+                return '<li class="top-item">' +
+                    '<div class="top-rank">' + (index + 1) + '</div>' +
+                    '<div class="top-info"><span class="top-name">' + escapeHtml(name) + '</span><span class="top-meta">Jami sotilgan: ' + qty + ' dona</span></div>' +
+                    '</li>';
+            }).join('');
+        }
+    }
+
+    // 5. EXPENSES
+    var expenses = financesArr.filter(function (f) { return f.type === 'expense'; }).sort(function (a, b) { return new Date(b.date) - new Date(a.date); }).slice(0, 5);
     var tbody = document.getElementById('dashExpenseBody');
     var emptyE = document.getElementById('dashEmptyExpense');
     var table = document.getElementById('dashExpenseTable');
 
     if (expenses.length === 0) {
         tbody.innerHTML = '';
-        emptyE.style.display = 'block';
-        table.style.display = 'none';
+        if (emptyE) emptyE.style.display = 'block';
+        if (table) table.style.display = 'none';
     } else {
-        emptyE.style.display = 'none';
-        table.style.display = '';
+        if (emptyE) emptyE.style.display = 'none';
+        if (table) table.style.display = '';
         tbody.innerHTML = expenses.map(function (f, i) {
-            return '<tr><td>' + (i + 1) + '</td><td>' + formatDate(f.date) + '</td><td>' + escapeHtml(f.category) + '</td><td>' + escapeHtml(f.description || 'вЂ”') + '</td><td class="amount-negative">-' + formatMoney(f.amount) + '</td></tr>';
+            return '<tr><td>' + formatDate(f.date) + '</td><td>' + escapeHtml(f.description || '—') + '</td><td class="amount-negative">-' + formatMoney(f.amount) + '</td></tr>';
         }).join('');
     }
 }

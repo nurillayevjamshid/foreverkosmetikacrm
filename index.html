@@ -164,38 +164,83 @@
                     </div>
                 </div>
 
-                <!-- Expense List (replaces recent sales & top products) -->
-                <div class="card" style="margin-top: 20px;">
-                    <div class="card-header"
-                        style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2><i class="fas fa-list-ul"></i> Chiqim ro'yxati</h2>
-                        <button class="btn btn-danger btn-sm" id="addDashExpenseBtn">
-                            <i class="fas fa-plus"></i> Chiqim qo'shish
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="data-table" id="dashExpenseTable">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Sana</th>
-                                        <th>Kategoriya</th>
-                                        <th>Tavsif</th>
-                                        <th>Summa</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dashExpenseBody">
-                                    <!-- Dynamic -->
-                                </tbody>
-                            </table>
+                <!-- Sales Dynamics & Map -->
+                <div class="dashboard-mid-grid">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-chart-bar"></i> Sotuvlar dinamikasi (oylik)</h2>
                         </div>
-                        <div class="empty-state" id="dashEmptyExpense" style="display:none;">
-                            <i class="fas fa-wallet"></i>
-                            <p>Hali chiqimlar yo'q</p>
+                        <div class="card-body">
+                            <canvas id="salesDynamicsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card map-container">
+                        <div class="card-header">
+                            <h2><i class="fas fa-map-marked-alt"></i> Sotuvlar geografiyasi</h2>
+                        </div>
+                        <div id="uzbMapContainer">
+                            <!-- SVG Map will be loaded here via JS -->
                         </div>
                     </div>
                 </div>
+
+                <!-- Top Sections & Regions -->
+                <div class="dashboard-bot-grid">
+                    <!-- Regions List -->
+                    <div class="card demographics-container">
+                        <div class="card-header">
+                            <h2><i class="fas fa-users-viewfinder"></i> Viloyatlar bo'yicha</h2>
+                        </div>
+                        <div class="card-body demographics-list" id="demographicsList">
+                            <!-- Dynamic stats -->
+                        </div>
+                    </div>
+
+                    <!-- Top Products -->
+                    <div class="card top-items-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-crown"></i> Top mahsulotlar</h2>
+                        </div>
+                        <div class="card-body">
+                            <ul class="top-list" id="topProductsList">
+                                <!-- Dynamic -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Recent Expenses (shorter version for dashboard) -->
+                    <div class="card expense-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-list-ul"></i> Chiqim ro'yxati</h2>
+                            <button class="btn btn-danger btn-sm" id="addDashExpenseBtn">
+                                <i class="fas fa-plus"></i> Chiqim
+                            </button>
+                        </div>
+                        <div class="card-body recent-expenses-compact">
+                            <div class="table-responsive">
+                                <table class="data-table" id="dashExpenseTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Sana</th>
+                                            <th>Tavsif</th>
+                                            <th>Summa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashExpenseBody">
+                                        <!-- Dynamic -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="empty-state" id="dashEmptyExpense" style="display:none;">
+                                <i class="fas fa-wallet"></i>
+                                <p>Hali chiqimlar yo'q</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tooltip for map -->
+                <div id="mapTooltip" class="map-tooltip"></div>
             </section>
 
             <!-- ============== SALES PAGE ============== -->
@@ -660,6 +705,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         // Firebase Configuration
