@@ -1299,7 +1299,6 @@ function renderUsers(searchTerm) {
     tbody.innerHTML = filtered.map(function (u, i) {
         var uRole = (u.role && String(u.role).trim().toLowerCase() === 'admin');
         var roleBadge = uRole ? '<span class="status-badge active">Admin</span>' : '<span class="status-badge info">Manager</span>';
-        // Parolni bir necha xil nomlar bo'yicha tekshiramiz (password, parol, pass, userPassword)
         var realPassword = u.password || u.parol || u.pass || u.userPassword;
         var hasPassword = !!realPassword;
         var pwdToShow = hasPassword ? realPassword : "Parol topilmadi";
@@ -1309,7 +1308,7 @@ function renderUsers(searchTerm) {
             '<button type="button" class="password-eye-btn" data-visible="false" title="Ko\'rsatish/Yashirish"><i class="fas fa-eye"></i></button>' +
             '</div>';
 
-        return '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(u.name) + '</td><td>' + escapeHtml(u.email) + '</td><td>' + passwordHtml + '</td><td>' + roleBadge + '</td><td>' + formatDate(u.createdAt) + '</td>' +
+        return '<tr><td>' + (i + 1) + '</td><td><a href="managerpage.html" class="user-name-link">' + escapeHtml(u.name) + '</a></td><td>' + escapeHtml(u.email) + '</td><td>' + passwordHtml + '</td><td>' + roleBadge + '</td><td>' + formatDate(u.createdAt) + '</td>' +
             '<td><button class="btn-icon edit user-edit-btn" data-id="' + u.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
             '<button class="btn-icon delete user-delete-btn" data-id="' + u.id + '" data-name="' + escapeHtml(u.name) + '" title="O\'chirish"><i class="fas fa-trash"></i></button></td></tr>';
     }).join('');

@@ -3035,3 +3035,27 @@ html[data-theme="light"] .gallery-item {
     background: #ffffff;
     border-color: #e2e8f0;
 }
+
+.user-name-link {
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.user-name-link:hover {
+    color: var(--accent-light);
+    text-decoration: underline;
+}
+
+.user-info-link {
+    text-decoration: none;
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+}

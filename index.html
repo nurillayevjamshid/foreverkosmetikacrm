@@ -71,19 +71,21 @@
         </ul>
 
         <div class="sidebar-footer">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
+            <a href="managerpage.html" class="user-info-link">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name" id="displayUserName">Yuklanmoqda...</span>
+                        <span class="user-role">Boshqaruvchi</span>
+                    </div>
                 </div>
-                <div class="user-details">
-                    <span class="user-name" id="displayUserName">Yuklanmoqda...</span>
-                    <span class="user-role">Boshqaruvchi</span>
-                </div>
-                <button id="logoutBtn" class="logout-btn" title="Tizimdan chiqish"
-                    style="color: var(--danger); font-size: 1.2rem; margin-left: auto; background: none; border: none; cursor: pointer;">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
+            </a>
+            <button id="logoutBtn" class="logout-btn" title="Tizimdan chiqish"
+                style="color: var(--danger); font-size: 1.2rem; margin-left: auto; background: none; border: none; cursor: pointer; position: relative; z-index: 2;">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
     </nav>
 
