@@ -1755,6 +1755,7 @@ html[data-theme="light"] .image-upload-area {
     flex-direction: column;
     gap: 12px;
     padding: 2px 0;
+    overflow: visible;
 }
 
 .sale-item-row {
@@ -1765,10 +1766,24 @@ html[data-theme="light"] .image-upload-area {
     background: rgba(255, 255, 255, 0.02);
     padding: 16px;
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     transition: all 0.3s ease;
     animation: slideIn 0.3s ease;
+    position: relative;
+    z-index: 1;
 }
+
+.sale-item-row:focus-within,
+.sale-item-row:has(.item-product.open) {
+    z-index: 100;
+}
+
+html[data-theme="light"] .sale-item-row {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
 
 .sale-item-row:hover {
     background: rgba(255, 255, 255, 0.04);
@@ -1781,16 +1796,25 @@ html[data-theme="light"] .image-upload-area {
     margin-bottom: 0 !important;
     height: 48px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
     background: rgba(255, 255, 255, 0.03) !important;
     color: var(--text) !important;
     padding: 0 12px;
+    font-weight: 600;
 }
+
+html[data-theme="light"] .sale-item-row .item-price input,
+html[data-theme="light"] .sale-item-row .item-qty-input {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #1e293b !important;
+}
+
 
 .item-product-trigger {
     width: 100%;
     height: 48px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.03);
     color: var(--text);
@@ -1802,6 +1826,13 @@ html[data-theme="light"] .image-upload-area {
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
+html[data-theme="light"] .item-product-trigger {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
 
 .item-product-trigger:hover {
     background: rgba(255, 255, 255, 0.06);
@@ -1853,8 +1884,15 @@ html[data-theme="light"] .image-upload-area {
     box-shadow: 0 16px 30px rgba(0, 0, 0, 0.45);
     padding: 8px;
     display: none;
-    z-index: 80;
+    z-index: 2000;
 }
+
+html[data-theme="light"] .item-product-dropdown {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
 
 .item-product.open .item-product-dropdown {
     display: block;
@@ -1940,38 +1978,40 @@ html[data-theme="light"] .image-upload-area {
     font-weight: 600;
 }
 
-.product-option-empty {
-    border: 1px dashed var(--border-light);
-    border-radius: 10px;
-    padding: 12px;
-    text-align: center;
-    color: var(--text-secondary);
-    font-size: 0.88rem;
+html[data-theme="light"] .product-option-item {
+    background: #f8fafc;
+    border-color: #e2e8f0;
 }
 
-.item-qty-stepper {
-    display: grid;
-    grid-template-columns: 32px minmax(0, 1fr) 32px;
-    align-items: center;
-    gap: 4px;
+html[data-theme="light"] .product-option-item:hover {
+    background: #f1f5f9;
+}
+
+html[data-theme="light"] .product-option-name {
+    color: #1e293b;
 }
 
 .qty-btn {
     width: 32px;
     height: 32px;
-    border: 1px solid var(--border-light);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.02);
-    color: var(--text-secondary);
-    display: inline-flex;
+    border-radius: 8px;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--transition-fast);
+    transition: all 0.2s ease;
+}
+
+html[data-theme="light"] .qty-btn {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    color: #475569;
 }
 
 .qty-btn:hover {
-    background: rgba(255, 255, 255, 0.06);
     border-color: var(--accent);
     color: var(--accent);
     transform: translateY(-1px);
@@ -1979,6 +2019,15 @@ html[data-theme="light"] .image-upload-area {
 
 .qty-btn:active {
     transform: scale(0.97);
+}
+
+
+/* Quantity Stepper Layout */
+.item-qty-stepper {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 32px;
+    align-items: center;
+    gap: 4px;
 }
 
 .sale-item-row .item-qty-input {
@@ -2013,7 +2062,7 @@ html[data-theme="light"] .image-upload-area {
 
 .item-price-suffix {
     position: absolute;
-    right: 10px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 0.74rem;
@@ -2022,33 +2071,59 @@ html[data-theme="light"] .image-upload-area {
     pointer-events: none;
 }
 
+html[data-theme="light"] .item-price-suffix {
+    color: #64748b;
+}
+
+
 .sale-item-remove {
     color: #ff778f;
-    background: rgba(255, 61, 87, 0.14);
-    border: 1px solid rgba(255, 61, 87, 0.32);
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
+    background: rgba(255, 61, 87, 0.1);
+    border: 1.5px solid rgba(255, 61, 87, 0.2);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition-fast);
+    transition: all 0.2s ease;
+}
+
+html[data-theme="light"] .sale-item-remove {
+    background: #fff1f2;
+    border-color: #fecaca;
+    color: #e11d48;
 }
 
 .sale-item-remove:hover {
-    background: rgba(255, 61, 87, 0.22);
-    transform: translateY(-1px);
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+    transform: scale(1.05);
 }
+
+
+
 
 .sale-items-add-btn {
     margin-top: 10px;
     width: fit-content;
-    border: 1px solid var(--border-light);
-    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-secondary);
-    padding: 7px 14px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
+
+html[data-theme="light"] .sale-items-add-btn {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    color: #475569;
+}
+
 
 .sale-items-add-btn:hover {
     border-color: var(--accent);
