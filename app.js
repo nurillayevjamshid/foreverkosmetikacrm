@@ -940,10 +940,14 @@ function refreshDashboard() {
                 var imgHtml = (product && product.imageUrl)
                     ? '<img src="' + escapeHtml(product.imageUrl) + '" class="top-img" alt="' + escapeHtml(name) + '">'
                     : '<div class="top-img-placeholder">' + (name.charAt(0).toUpperCase() || 'M') + '</div>';
+                var priceText = product ? formatMoney(product.price) : "Narx yo'q";
 
                 return '<li class="top-item">' +
                     '<div class="top-img-wrap">' + imgHtml + '</div>' +
-                    '<div class="top-info"><span class="top-name">' + escapeHtml(name) + '</span></div>' +
+                    '<div class="top-info">' +
+                    '<span class="top-name">' + escapeHtml(name) + '</span>' +
+                    '<span class="top-meta">' + priceText + ' — ' + qty + ' dona</span>' +
+                    '</div>' +
                     '</li>';
             }).join('');
         }

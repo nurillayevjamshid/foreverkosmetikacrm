@@ -2478,6 +2478,12 @@ html[data-theme="light"] .tooltip-value {
     color: var(--text-muted);
 }
 
+/* Limit top items height so card doesn't get too long */
+.top-items-card .card-body {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
 html[data-theme="light"] .top-item {
     background: #f8fafc;
     border-color: #e2e8f0;
