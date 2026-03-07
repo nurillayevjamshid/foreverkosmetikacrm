@@ -664,14 +664,18 @@ function renderSales(searchTerm) {
     empty.style.display = 'none';
     tbody.innerHTML = filtered.map(function (s, i) {
         var items = s.items || [];
-        var itemsHtml = items.map(function (it) {
+        var tagsHtml = items.map(function (it) {
             var p = productsArr.find(function (px) { return px.id === it.productId; });
             var pname = p ? escapeHtml(p.name) : '—';
             return '<span class="sale-row-item-tag">' + pname + ' <span class="qty">x' + it.quantity + '</span></span>';
         }).join('');
 
-        if (items.length > 3) {
-            itemsHtml = '<span class="sale-row-items-count"><i class="fas fa-boxes-stacked"></i> ' + items.length + ' ta mahsulot</span>';
+        var itemsHtml = '<div class="sale-items-card" data-sale-id="' + s.id + '">' + tagsHtml + '</div>';
+
+        if (items.length > 5) {
+            itemsHtml = '<div class="sale-items-card" data-sale-id="' + s.id + '">' +
+                '<span class="sale-row-items-count"><i class="fas fa-boxes-stacked"></i> ' + items.length + ' ta mahsulot</span>' +
+                '</div>';
         }
 
         var fullItemsText = items.map(function (it) {
@@ -684,6 +688,36 @@ function renderSales(searchTerm) {
             '<button class="btn-icon delete sale-delete-btn" data-id="' + s.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button></div></td></tr>';
     }).join('');
 }
+
+// Global viewer logic
+document.addEventListener('click', function (e) {
+    var card = e.target.closest('.sale-items-card');
+    if (card) {
+        var sid = card.getAttribute('data-sale-id');
+        var sale = salesArr.find(function (x) { return x.id === sid; });
+        if (sale && sale.items) {
+            var gallery = document.getElementById('saleImagesGallery');
+            gallery.innerHTML = '<div class="loader-placeholder" style="text-align:center; padding:20px; width:100%"><i class="fas fa-spinner fa-spin"></i> Yuklanmoqda...</div>';
+            openModal('viewSaleImagesModal');
+
+            var imagesHtml = sale.items.map(function (it) {
+                var p = productsArr.find(function (px) { return px.id === it.productId; });
+                if (p && p.imageUrl) {
+                    return '<div class="gallery-item">' +
+                        '<img src="' + p.imageUrl + '" alt="' + escapeHtml(p.name) + '">' +
+                        '<div class="gallery-item-info">' + escapeHtml(p.name) + ' (x' + it.quantity + ')</div>' +
+                        '</div>';
+                }
+                return '<div class="gallery-item no-img">' +
+                    '<div class="placeholder"><i class="fas fa-image"></i></div>' +
+                    '<div class="gallery-item-info">' + (p ? escapeHtml(p.name) : '—') + ' (x' + it.quantity + ')</div>' +
+                    '</div>';
+            }).join('');
+
+            gallery.innerHTML = imagesHtml || '<p style="text-align:center; padding:20px; color:var(--text-muted)">Rasmlar mavjud emas</p>';
+        }
+    }
+});
 
 function editSale(id) {
     var s = salesArr.find(function (x) { return x.id === id; });
