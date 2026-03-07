@@ -164,45 +164,8 @@
                     </div>
                 </div>
 
-                <!-- Dashboard Main Grid -->
-                <div class="dashboard-main-grid">
-                    <!-- Left Column: Stats Cards -->
-                    <div class="dashboard-left-col">
-                        <!-- Regions List -->
-                        <div class="card demographics-container">
-                            <div class="card-header">
-                                <h2><i class="fas fa-users-viewfinder"></i> Viloyatlar bo'yicha</h2>
-                            </div>
-                            <div class="card-body demographics-list" id="demographicsList">
-                                <!-- Dynamic stats -->
-                            </div>
-                        </div>
-
-                        <!-- Top Products -->
-                        <div class="card top-items-card">
-                            <div class="card-header">
-                                <h2><i class="fas fa-crown"></i> Top mahsulotlar</h2>
-                            </div>
-                            <div class="card-body">
-                                <ul class="top-list" id="topProductsList">
-                                    <!-- Dynamic -->
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Map -->
-                    <div class="card map-container">
-                        <div class="card-header">
-                            <h2><i class="fas fa-map-marked-alt"></i> Sotuvlar geografiyasi</h2>
-                        </div>
-                        <div id="uzbMapContainer">
-                            <!-- SVG Map will be loaded here via JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dashboard-bottom-section">
+                <!-- Top Section: Full Width Expenses -->
+                <div class="dashboard-top-section">
                     <div class="card expense-card full-width-card">
                         <div class="card-header">
                             <h2><i class="fas fa-wallet"></i> Xarajatlar bo'limi</h2>
@@ -224,8 +187,30 @@
                     </div>
                 </div>
 
-                <!-- Tooltip for map -->
-                <div id="mapTooltip" class="map-tooltip"></div>
+                <!-- Dashboard Grid: Regions & Products -->
+                <div class="dashboard-main-grid">
+                    <!-- Column 1: Regions Stats -->
+                    <div class="card demographics-container">
+                        <div class="card-header">
+                            <h2><i class="fas fa-users-viewfinder"></i> Viloyatlar bo'yicha sotuv</h2>
+                        </div>
+                        <div class="card-body demographics-list" id="demographicsList">
+                            <!-- Dynamic stats -->
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Top Products -->
+                    <div class="card top-items-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-crown"></i> Top mahsulotlar</h2>
+                        </div>
+                        <div class="card-body">
+                            <ul class="top-list" id="topProductsList">
+                                <!-- Dynamic -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- ============== SALES PAGE ============== -->

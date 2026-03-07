@@ -874,113 +874,8 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
 // ==========================================
 // === DASHBOARD ===
 // ==========================================
-// Xaritani bir marta yuklash va hududlarni sozlash
-var isMapInitialized = false;
-function initUzbMap() {
-    if (isMapInitialized) return;
-    var container = document.getElementById('uzbMapContainer');
-    if (!container) return;
-
-    fetch('uzbekistan.svg').then(function (res) { return res.text(); }).then(function (svgCode) {
-        container.innerHTML = svgCode;
-        var svg = container.querySelector('svg');
-        if (svg) {
-            svg.setAttribute('width', '100%');
-            svg.setAttribute('height', 'auto');
-            svg.style.overflow = 'visible';
-            var paths = svg.querySelectorAll('path');
-
-            // Hudud nomlarini bir marta chiqarish uchun
-            var labeledRegions = new Set();
-
-            paths.forEach(function (p) {
-                p.classList.add('map-path');
-                var id = p.id || "";
-                var regionName = "";
-                if (id === 'andijan') regionName = "Andijon";
-                else if (id === 'bukhara') regionName = "Buxoro";
-                else if (id === 'fergana') regionName = "Farg'ona";
-                else if (id === 'jizzakh') regionName = "Jizzax";
-                else if (id === 'namangan') regionName = "Namangan";
-                else if (id === 'navoiy') regionName = "Navoiy";
-                else if (id === 'qashqadaryo') regionName = "Qashqadaryo";
-                else if (id === 'karakalpakstan') regionName = "Qoraqalpog'iston";
-                else if (id === 'samarqand') regionName = "Samarqand";
-                else if (id === 'sirdaryo') regionName = "Sirdaryo";
-                else if (id === 'surxondaryo') regionName = "Surxondaryo";
-                else if (id === 'xorazm') regionName = "Xorazm";
-                else if (id === 'tashkent') regionName = "Toshkent";
-                else if (id === 'aral-sea') regionName = "Orol dengizi";
-
-                if (regionName) {
-                    p.setAttribute('data-region', regionName);
-
-                    // Label qo'shish (faqat bir marta har bir hudud uchun)
-                    if (!labeledRegions.has(regionName) && regionName !== "Orol dengizi") {
-                        labeledRegions.add(regionName);
-                        // BBox orqali markazni hisoblash
-                        // SVG renderingdan keyin ishlaydi
-                        setTimeout(function () {
-                            try {
-                                var bbox = p.getBBox();
-                                var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                                // Tashkent shahri juda kichik, uni biroz surish kerak bo'lishi mumkin
-                                var x = bbox.x + bbox.width / 2;
-                                var y = bbox.y + bbox.height / 2;
-
-                                // Maxsus korreksiyalar
-                                if (id === 'andijan') { x += 5; }
-                                if (id === 'fergana') { y += 10; }
-                                if (id === 'namangan') { y -= 5; }
-
-                                text.setAttribute("x", x);
-                                text.setAttribute("y", y);
-                                text.setAttribute("text-anchor", "middle");
-                                text.setAttribute("class", "map-label");
-                                text.textContent = regionName;
-                                svg.appendChild(text);
-                            } catch (e) { }
-                        }, 100);
-                    }
-                }
-
-                // Tooltip events
-                p.addEventListener('mousemove', function (e) {
-                    var tooltip = document.getElementById('mapTooltip');
-                    var name = this.getAttribute('data-region') || "Noma'lum";
-                    var count = this.getAttribute('data-count') || 0;
-                    var sum = parseFloat(this.getAttribute('data-sum') || 0);
-
-                    tooltip.innerHTML = '<strong>' + name + '</strong>' +
-                        '<div class="tooltip-row">' +
-                        '<span class="tooltip-label">Sotuvlar soni:</span>' +
-                        '<span class="tooltip-value">' + count + ' ta</span>' +
-                        '</div>' +
-                        '<div class="tooltip-row">' +
-                        '<span class="tooltip-label">Umumiy summa:</span>' +
-                        '<span class="tooltip-value tooltip-sum">' + formatMoney(sum) + '</span>' +
-                        '</div>';
-
-                    tooltip.style.display = 'block';
-                    tooltip.style.left = e.pageX + 15 + 'px';
-                    tooltip.style.top = e.pageY + 15 + 'px';
-                });
-                p.addEventListener('mouseleave', function () {
-                    document.getElementById('mapTooltip').style.display = 'none';
-                });
-            });
-        }
-        isMapInitialized = true;
-        setTimeout(refreshDashboard, 200); // Label va xarita to'liq rendered bo'lishi uchun
-    });
-}
-
-// Chart instance globalda saqlanadi
-var salesChart = null;
 
 function refreshDashboard() {
-    if (!isMapInitialized) { initUzbMap(); return; }
-
     var inc = financesArr.filter(function (f) { return f.type === 'income'; }).reduce(function (s, f) { return s + f.amount; }, 0);
     var exp = financesArr.filter(function (f) { return f.type === 'expense'; }).reduce(function (s, f) { return s + f.amount; }, 0);
 
@@ -989,32 +884,18 @@ function refreshDashboard() {
     document.getElementById('totalProfit').textContent = formatMoney(inc - exp);
     document.getElementById('totalSalesCount').textContent = salesArr.length;
 
-    // 1. MAP & REGION STATS
+    // 1. REGION STATS
     var regionCount = {};
     var regionSum = {};
-    var maxCount = 0;
     salesArr.forEach(function (s) {
         var r = s.region || "Noma'lum";
         regionCount[r] = (regionCount[r] || 0) + 1;
         regionSum[r] = (regionSum[r] || 0) + (s.totalAmount || 0);
-        if (regionCount[r] > maxCount) maxCount = regionCount[r];
     });
 
-    // Update Map paths
-    document.querySelectorAll('.map-path').forEach(function (p) {
-        var r = p.getAttribute('data-region');
-        var count = regionCount[r] || 0;
-        var sum = regionSum[r] || 0;
-        p.setAttribute('data-count', count);
-        p.setAttribute('data-sum', sum);
-        p.classList.toggle('has-data', count > 0);
-        p.classList.toggle('top-region', count > 0 && count === maxCount);
-    });
-
-    // 2. REGIONS LIST (Sorted by count)
     var demoList = document.getElementById('demographicsList');
     if (demoList) {
-        var sortedRegions = Object.keys(regionCount).sort(function (a, b) { return regionCount[b] - regionCount[a]; }).slice(0, 5);
+        var sortedRegions = Object.keys(regionCount).sort(function (a, b) { return regionCount[b] - regionCount[a]; }).slice(0, 10);
         if (sortedRegions.length === 0) {
             demoList.innerHTML = '<p class="text-muted" style="text-align:center; padding:20px;">Hali sotuvlar geografiyasi shakllanmagan</p>';
         } else {
@@ -1038,7 +919,7 @@ function refreshDashboard() {
         }
     }
 
-    // 3. TOP PRODUCTS
+    // 2. TOP PRODUCTS
     var prodStats = {};
     salesArr.forEach(function (s) {
         (s.items || []).forEach(function (it) {
@@ -1048,7 +929,7 @@ function refreshDashboard() {
 
     var topListEl = document.getElementById('topProductsList');
     if (topListEl) {
-        var sortedProds = Object.keys(prodStats).sort(function (a, b) { return prodStats[b] - prodStats[a]; }).slice(0, 5);
+        var sortedProds = Object.keys(prodStats).sort(function (a, b) { return prodStats[b] - prodStats[a]; }).slice(0, 10);
         if (sortedProds.length === 0) {
             topListEl.innerHTML = '<p class="text-muted" style="text-align:center; padding:10px;">Ma\'lumot yo\'q</p>';
         } else {
