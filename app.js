@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CosmeticaCRM - Men Kosmetika Biznesi uchun CRM Tizimi
  * App.js - Firebase Compat Version (Updated)
  */
@@ -937,9 +937,13 @@ function refreshDashboard() {
                 var product = productsArr.find(function (p) { return p.id === pid; });
                 var name = product ? product.name : "Noma'lum";
                 var qty = prodStats[pid];
+                var imgHtml = (product && product.imageUrl)
+                    ? '<img src="' + escapeHtml(product.imageUrl) + '" class="top-img" alt="' + escapeHtml(name) + '">'
+                    : '<div class="top-img-placeholder">' + (name.charAt(0).toUpperCase() || 'M') + '</div>';
+
                 return '<li class="top-item">' +
-                    '<div class="top-rank">' + (index + 1) + '</div>' +
-                    '<div class="top-info"><span class="top-name">' + escapeHtml(name) + '</span><span class="top-meta">Jami sotilgan: ' + qty + ' dona</span></div>' +
+                    '<div class="top-img-wrap">' + imgHtml + '</div>' +
+                    '<div class="top-info"><span class="top-name">' + escapeHtml(name) + '</span></div>' +
                     '</li>';
             }).join('');
         }
