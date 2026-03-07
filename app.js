@@ -132,7 +132,8 @@ var pageConfig = {
     products: { title: 'Mahsulotlar', subtitle: "Mahsulotlar ro'yxati va boshqaruvi" },
     settings: { title: 'Sozlamalar', subtitle: 'Tizim sozlamalari boshqaruvi' },
     staff: { title: 'Xodimlar', subtitle: 'Xodimlar va kirish huquqlari' },
-    customers: { title: 'Mijozlar', subtitle: 'Mijozlar bazasi va tarixi' }
+    customers: { title: 'Mijozlar', subtitle: 'Mijozlar bazasi va tarixi' },
+    profile: { title: 'Menejer Profili', subtitle: 'Shaxsiy profil va ish statistikasi' }
 };
 
 function navigateTo(pageName) {
@@ -152,6 +153,7 @@ function navigateTo(pageName) {
     if (overlay) overlay.classList.remove('active');
     updateUIVisibility(pageName);
     if (pageName === 'customers') renderCustomers();
+    if (pageName === 'profile') loadUserProfile();
 }
 
 function updateUIVisibility(currentPage) {
@@ -168,6 +170,46 @@ document.querySelectorAll('.nav-item').forEach(function (item) {
         e.preventDefault();
         navigateTo(item.dataset.page);
     });
+});
+
+document.getElementById('nav-profile').addEventListener('click', function (e) {
+    e.preventDefault();
+    navigateTo('profile');
+});
+
+function loadUserProfile() {
+    var user = auth.currentUser;
+    if (!user) return;
+
+    document.getElementById('infoEmail').textContent = user.email;
+    document.getElementById('infoUid').textContent = user.uid;
+    document.getElementById('profileName').textContent = user.email.split('@')[0];
+
+    // Role display
+    var role = (currentUserRole === 'admin') ? 'Admin' : 'Menejer';
+    document.getElementById('infoRole').textContent = role;
+    document.getElementById('profileRoleText').innerHTML = '<i class="fas fa-shield-halved"></i> ' + role;
+
+    // Load performance stats
+    var userSales = salesArr.filter(function (s) {
+        // Here we assume sales don't have owner ID yet, or if they do we filter.
+        // For now let's just show total or leave at 0 if no clear link.
+        // If we want to be smart, we can filter by the name if it matches? 
+        // But usually it's better to just show 0 or global for now if not implemented.
+        return false;
+    });
+
+    // We can also use usersArr to find current user name
+    db.collection('users').doc(user.uid).get().then(function (doc) {
+        if (doc.exists) {
+            var data = doc.data();
+            if (data.name) document.getElementById('profileName').textContent = data.name;
+        }
+    });
+}
+
+document.getElementById('logoutBtnProfile').addEventListener('click', function () {
+    auth.signOut().then(function () { window.location.href = 'login.html'; });
 });
 
 // ==========================================
@@ -828,8 +870,8 @@ document.getElementById('saleForm').addEventListener('submit', function (e) {
 function updateCustomerStats(customerName, amount) {
     if (!customerName) return;
     // Ism bo'yicha mijozni qidirish (sodda usul)
-    db.collection('customers').where('name', '==', customerName).get().then(function(snapshot) {
-        snapshot.forEach(function(doc) {
+    db.collection('customers').where('name', '==', customerName).get().then(function (snapshot) {
+        snapshot.forEach(function (doc) {
             var c = doc.data();
             db.collection('customers').doc(doc.id).update({
                 salesCount: (c.salesCount || 0) + 1,
@@ -1546,8 +1588,8 @@ function renderCustomers(searchQuery) {
         snapshot.forEach(function (doc) {
             var data = doc.data();
             data.id = doc.id;
-            if (!searchQuery || 
-                data.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            if (!searchQuery ||
+                data.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 data.phone.includes(searchQuery)) {
                 customers.push(data);
             }
@@ -1560,10 +1602,10 @@ function renderCustomers(searchQuery) {
             customersEmpty.style.display = 'none';
             customersBody.innerHTML = customers.map(function (c, i) {
                 var totalSpent = c.totalSpent || 0;
-                var vipBadge = totalSpent > 5000000 ? '<span class="status-badge active" style="background: linear-gradient(45deg, #ffd700, #ffa500); color: #000; border: none;"><i class="fas fa-crown"></i> VIP</span>' : 
-                               totalSpent > 1000000 ? '<span class="status-badge info">Doimiy</span>' : 
-                               '<span class="status-badge">Yangi</span>';
-                
+                var vipBadge = totalSpent > 5000000 ? '<span class="status-badge active" style="background: linear-gradient(45deg, #ffd700, #ffa500); color: #000; border: none;"><i class="fas fa-crown"></i> VIP</span>' :
+                    totalSpent > 1000000 ? '<span class="status-badge info">Doimiy</span>' :
+                        '<span class="status-badge">Yangi</span>';
+
                 var phoneDisplay = '<div>' + escapeHtml(c.phone) + '</div>';
                 if (c.telegram) {
                     var tgLink = c.telegram.startsWith('@') ? c.telegram.substring(1) : c.telegram;
@@ -1673,9 +1715,9 @@ function showCustomerHistory(customerId, customerName) {
     document.getElementById('historyCustomerName').textContent = customerName;
     var historyBody = document.getElementById('customerHistoryBody');
     historyBody.innerHTML = '<tr><td colspan="4" style="text-align:center"><i class="fas fa-spinner fa-spin"></i> Yuklanmoqda...</td></tr>';
-    
+
     // Mijoz ma'lumotlarini olish
-    db.collection('customers').doc(customerId).get().then(function(doc) {
+    db.collection('customers').doc(customerId).get().then(function (doc) {
         if (doc.exists) {
             var c = doc.data();
             document.getElementById('historyTotalSales').textContent = c.salesCount || 0;
@@ -1685,18 +1727,18 @@ function showCustomerHistory(customerId, customerName) {
     });
 
     // Sotuvlar tarixini olish (Mijoz ismi bo'yicha)
-    db.collection('sales').where('name', '==', customerName).orderBy('date', 'desc').get().then(function(snapshot) {
+    db.collection('sales').where('name', '==', customerName).orderBy('date', 'desc').get().then(function (snapshot) {
         if (snapshot.empty) {
             historyBody.innerHTML = '<tr><td colspan="4" style="text-align:center">Xaridlar mavjud emas</td></tr>';
         } else {
             var html = '';
-            snapshot.forEach(function(doc) {
+            snapshot.forEach(function (doc) {
                 var s = doc.data();
-                var itemsStr = s.items ? s.items.map(function(it) {
-                    var p = productsArr.find(function(px) { return px.id === it.productId; });
+                var itemsStr = s.items ? s.items.map(function (it) {
+                    var p = productsArr.find(function (px) { return px.id === it.productId; });
                     return (p ? p.name : 'Mahsulot') + ' (x' + it.quantity + ')';
                 }).join(', ') : '—';
-                
+
                 html += '<tr>' +
                     '<td>' + formatDate(s.date) + '</td>' +
                     '<td style="font-size:0.85rem">' + escapeHtml(itemsStr) + '</td>' +
@@ -1707,7 +1749,7 @@ function showCustomerHistory(customerId, customerName) {
             historyBody.innerHTML = html;
         }
         openModal('customerHistoryModal');
-    }).catch(function(err) {
+    }).catch(function (err) {
         console.error("History error:", err);
         historyBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--danger)">Yuklashda xatolik yuz berdi</td></tr>';
     });

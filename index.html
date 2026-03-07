@@ -77,7 +77,7 @@
         </ul>
 
         <div class="sidebar-footer">
-            <a href="managerpage.html" class="user-info-link">
+            <a href="#" class="user-info-link" id="nav-profile">
                 <div class="user-info">
                     <div class="user-avatar">
                         <i class="fas fa-user"></i>
@@ -505,7 +505,89 @@
                     </div>
                 </div>
             </section>
+
+            <!-- ============== PROFILE PAGE ============== -->
+            <section class="page" id="page-profile">
+                <div class="profile-header-card">
+                    <div class="profile-avatar-big">
+                        <i class="fas fa-user-astronaut"></i>
+                    </div>
+                    <div class="profile-main-info">
+                        <h2 id="profileName">Yuklanmoqda...</h2>
+                        <p id="profileRoleText"><i class="fas fa-shield-halved"></i> Menejer</p>
+                    </div>
+                    <div class="stat-decoration"></div>
+                    <div class="stat-decoration" style="left: -20px; bottom: -20px; width: 100px; height: 100px;"></div>
+                </div>
+
+                <div class="profile-grid">
+                    <!-- Profile Details Sidebar -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-info-circle"></i> Ma'lumotlar</h2>
+                        </div>
+                        <div class="card-body">
+                            <ul class="info-list">
+                                <li class="info-item">
+                                    <span class="info-label">E-mail Manzil</span>
+                                    <span class="info-value" id="infoEmail">---</span>
+                                </li>
+                                <li class="info-item">
+                                    <span class="info-label">Telefon Raqam</span>
+                                    <span class="info-value" id="infoPhone"><i class="fas fa-phone"></i>
+                                        Belgilanmagan</span>
+                                </li>
+                                <li class="info-item">
+                                    <span class="info-label">Rol</span>
+                                    <span class="info-value" id="infoRole">---</span>
+                                </li>
+                                <li class="info-item">
+                                    <span class="info-label">Tizimdagi ID</span>
+                                    <span class="info-value" id="infoUid"
+                                        style="font-family: monospace; font-size: 12px; opacity: 0.6;">---</span>
+                                </li>
+                            </ul>
+                            <div style="margin-top: 32px;">
+                                <button id="logoutBtnProfile" class="btn btn-danger"
+                                    style="width: 100%; justify-content: center;">
+                                    <i class="fas fa-sign-out-alt"></i> Tizimdan chiqish
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Area -->
+                    <div class="profile-main-content">
+                        <div class="performance-card">
+                            <div class="p-stat">
+                                <span class="p-stat-label">Sotuvlar soni</span>
+                                <div class="p-stat-value" id="statSalesCount">0</div>
+                            </div>
+                            <div class="p-stat">
+                                <span class="p-stat-label">Umumiy savdo hajmi</span>
+                                <div class="p-stat-value accent" id="statSalesVolume">0 so'm</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-clock-rotate-left"></i> So'nggi amallaringiz</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="empty-state" style="padding: 60px 20px;">
+                                    <i class="fas fa-folder-open"
+                                        style="font-size: 3rem; margin-bottom: 20px; opacity: 0.2;"></i>
+                                    <p>Hozircha malumotlar yo'q</p>
+                                    <span style="font-size: 13px; color: var(--text-muted);">Siz amalga oshirgan so'nggi
+                                        5 ta sotuv va o'zgarishlar bu yerda ko'rinadi.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
+
     </main>
 
     <!-- ============== MODALS ============== -->
@@ -819,22 +901,36 @@
     <div class="modal-overlay" id="customerHistoryModal">
         <div class="modal modal-lg">
             <div class="modal-header">
-                <h2 id="historyModalTitle"><i class="fas fa-history"></i> Xaridlar tarixi: <span id="historyCustomerName"></span></h2>
+                <h2 id="historyModalTitle"><i class="fas fa-history"></i> Xaridlar tarixi: <span
+                        id="historyCustomerName"></span></h2>
                 <button class="modal-close" data-modal="customerHistoryModal"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body">
-                <div class="history-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
-                    <div class="stat-mini-card" style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
-                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">Umumiy xaridlar</span>
-                        <span id="historyTotalSales" style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">0</span>
+                <div class="history-stats-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div class="stat-mini-card"
+                        style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                        <span
+                            style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">Umumiy
+                            xaridlar</span>
+                        <span id="historyTotalSales"
+                            style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">0</span>
                     </div>
-                    <div class="stat-mini-card" style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
-                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">Umumiy summa</span>
-                        <span id="historyTotalSpent" style="font-size: 1.2rem; font-weight: 700; color: var(--success);">0 so'm</span>
+                    <div class="stat-mini-card"
+                        style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                        <span
+                            style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">Umumiy
+                            summa</span>
+                        <span id="historyTotalSpent"
+                            style="font-size: 1.2rem; font-weight: 700; color: var(--success);">0 so'm</span>
                     </div>
-                    <div class="stat-mini-card" style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
-                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">Joriy qarz</span>
-                        <span id="historyTotalDebt" style="font-size: 1.2rem; font-weight: 700; color: var(--danger);">0 so'm</span>
+                    <div class="stat-mini-card"
+                        style="background: var(--bg-secondary); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                        <span
+                            style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">Joriy
+                            qarz</span>
+                        <span id="historyTotalDebt" style="font-size: 1.2rem; font-weight: 700; color: var(--danger);">0
+                            so'm</span>
                     </div>
                 </div>
                 <div class="table-responsive">
