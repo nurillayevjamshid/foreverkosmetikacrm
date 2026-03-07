@@ -3048,6 +3048,15 @@ html[data-theme="light"] .gallery-item {
     text-decoration: underline;
 }
 
+.user-data-row {
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.user-data-row:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
 .user-info-link {
     text-decoration: none;
     flex: 1;
