@@ -277,26 +277,50 @@
                 </div>
 
                 <div class="finance-summary">
-                    <div class="finance-summary-card income-card">
-                        <i class="fas fa-arrow-circle-down"></i>
-                        <div>
-                            <span class="fs-label">Kirim</span>
-                            <span class="fs-value" id="financeIncome">0 so'm</span>
+                    <!-- Finance Income Card -->
+                    <div class="stat-card stat-net-profit">
+                        <div class="stat-card-inner">
+                            <div class="stat-card-header">
+                                <span class="stat-label">Kirim</span>
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-value" id="financeIncome">0 so'm</span>
+                            </div>
                         </div>
+                        <div class="stat-decoration"></div>
                     </div>
-                    <div class="finance-summary-card expense-card">
-                        <i class="fas fa-arrow-circle-up"></i>
-                        <div>
-                            <span class="fs-label">Chiqim</span>
-                            <span class="fs-value" id="financeExpense">0 so'm</span>
+                    <!-- Finance Expense Card -->
+                    <div class="stat-card stat-total-expense">
+                        <div class="stat-card-inner">
+                            <div class="stat-card-header">
+                                <span class="stat-label">Chiqim</span>
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-value" id="financeExpense">0 so'm</span>
+                            </div>
                         </div>
+                        <div class="stat-decoration"></div>
                     </div>
-                    <div class="finance-summary-card balance-card">
-                        <i class="fas fa-balance-scale"></i>
-                        <div>
-                            <span class="fs-label">Balans</span>
-                            <span class="fs-value" id="financeBalance">0 so'm</span>
+                    <!-- Finance Balance Card -->
+                    <div class="stat-card stat-total-balance">
+                        <div class="stat-card-inner">
+                            <div class="stat-card-header">
+                                <span class="stat-label">Balans</span>
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-balance-scale"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-value" id="financeBalance">0 so'm</span>
+                            </div>
                         </div>
+                        <div class="stat-decoration"></div>
                     </div>
                 </div>
 

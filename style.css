@@ -777,57 +777,8 @@ body {
 .finance-summary {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 20px;
-}
-
-.finance-summary-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    transition: var(--transition);
-}
-
-.finance-summary-card:hover {
-    border-color: var(--border-light);
-    transform: translateY(-2px);
-}
-
-.finance-summary-card i {
-    font-size: 28px;
-}
-
-.income-card i {
-    color: var(--success);
-}
-
-.expense-card i {
-    color: var(--danger);
-}
-
-.balance-card i {
-    color: var(--accent);
-}
-
-.fs-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.fs-value {
-    display: block;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-    margin-top: 4px;
+    gap: 24px;
+    margin-bottom: 28px;
 }
 
 /* ===========================
