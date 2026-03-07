@@ -2204,8 +2204,14 @@ html[data-theme="light"] .image-upload-area {
 }
 
 /* Limit expense list height so only ~2 items are visible, rest via scroll */
+.expense-card {
+    height: 230px;
+    display: flex;
+    flex-direction: column;
+}
+
 .expense-card .card-body {
-    max-height: 250px;
+    flex: 1;
     overflow-y: auto;
 }
 
