@@ -1062,22 +1062,43 @@ function refreshDashboard() {
         }
     }
 
-    // 4. EXPENSES (Recent 10)
+    // 4. EXPENSES (Recent 10) - New Visual Design
     var expenses = financesArr.filter(function (f) { return f.type === 'expense'; }).sort(function (a, b) { return new Date(b.date) - new Date(a.date); }).slice(0, 10);
-    var tbody = document.getElementById('dashExpenseBody');
+    var listContainer = document.getElementById('dashExpenseList');
     var emptyE = document.getElementById('dashEmptyExpense');
-    var table = document.getElementById('dashExpenseTable');
 
     if (expenses.length === 0) {
-        if (tbody) tbody.innerHTML = '';
+        if (listContainer) listContainer.innerHTML = '';
         if (emptyE) emptyE.style.display = 'block';
-        if (table) table.style.display = 'none';
     } else {
         if (emptyE) emptyE.style.display = 'none';
-        if (table) table.style.display = '';
-        if (tbody) {
-            tbody.innerHTML = expenses.map(function (f) {
-                return '<tr><td>' + formatDate(f.date) + '</td><td>' + escapeHtml(f.description || '—') + '</td><td class="amount-negative">-' + formatMoney(f.amount) + '</td></tr>';
+        if (listContainer) {
+            listContainer.innerHTML = expenses.map(function (f) {
+                var desc = (f.description || "").toLowerCase();
+                var icon = "fa-receipt";
+                var typeClass = "other";
+
+                if (desc.includes('yandex') || desc.includes('taxi') || desc.includes('taksi')) {
+                    icon = "fa-car";
+                    typeClass = "transport";
+                } else if (desc.includes('target') || desc.includes('reklama') || desc.includes('ads')) {
+                    icon = "fa-bullhorn";
+                    typeClass = "marketing";
+                } else if (desc.includes('pochta') || desc.includes('dostavka') || desc.includes('kurer')) {
+                    icon = "fa-envelope";
+                    typeClass = "service";
+                }
+
+                return '<div class="expense-row">' +
+                    '<div class="expense-icon-wrap ' + typeClass + '"><i class="fas ' + icon + '"></i></div>' +
+                    '<div class="expense-details">' +
+                    '<span class="expense-title">' + escapeHtml(f.description || '—') + '</span>' +
+                    '<span class="expense-date">' + formatDate(f.date) + '</span>' +
+                    '</div>' +
+                    '<div class="expense-value-wrap">' +
+                    '<span class="expense-value">-' + formatMoney(f.amount) + '</span>' +
+                    '</div>' +
+                    '</div>';
             }).join('');
         }
     }

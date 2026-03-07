@@ -2235,93 +2235,103 @@ html[data-theme="light"] .image-upload-area {
 }
 
 
-/* Top Lists */
-.top-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* Expense Feed Styles (New Dashboard Layout) */
+.expense-feed-container {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.top-item {
+.expense-row {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 12px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: var(--transition-fast);
+    transition: var(--transition);
 }
 
-.top-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateX(4px);
+.expense-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
+    border-color: var(--accent-border-soft);
 }
 
-.top-rank {
-    width: 28px;
-    height: 28px;
+.expense-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--surface-light);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--accent-bg-soft);
-    color: var(--accent);
-    border-radius: 50%;
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    margin-right: 18px;
+    flex-shrink: 0;
+    transition: var(--transition);
 }
 
-.top-item:nth-child(1) .top-rank {
-    background: gold;
-    color: #000;
+.expense-icon-wrap.transport {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
 }
 
-.top-item:nth-child(2) .top-rank {
-    background: silver;
-    color: #000;
+.expense-icon-wrap.marketing {
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.1);
 }
 
-.top-item:nth-child(3) .top-rank {
-    background: #cd7f32;
-    color: #000;
+.expense-icon-wrap.service {
+    color: #f43f5e;
+    background: rgba(244, 63, 94, 0.1);
 }
 
-.top-info {
+.expense-icon-wrap.other {
+    color: #94a3b8;
+    background: rgba(148, 163, 184, 0.1);
+}
+
+.expense-details {
     flex: 1;
-    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.top-name {
-    display: block;
-    font-weight: 600;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.expense-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text);
 }
 
-.top-meta {
+.expense-date {
     font-size: 0.75rem;
     color: var(--text-muted);
 }
 
-.top-val {
-    font-weight: 700;
-    color: var(--accent);
-    font-size: 0.85rem;
+.expense-value-wrap {
+    text-align: right;
 }
 
-/* Compact Table Override for Dashboard */
-.recent-expenses-compact .data-table {
-    font-size: 0.85rem;
+.expense-value {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #fff;
+    /* Static white for dark mode, logic in JS for light */
 }
 
-.recent-expenses-compact .data-table th,
-.recent-expenses-compact .data-table td {
-    padding: 10px 8px;
+html[data-theme="light"] .expense-value {
+    color: #1e293b;
+}
+
+html[data-theme="light"] .expense-row {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+html[data-theme="light"] .expense-row:hover {
+    background: #f1f5f9;
 }
 
 .map-path {
@@ -2433,4 +2443,77 @@ html[data-theme="light"] .tooltip-value {
 
 .tooltip-sum {
     color: var(--success);
+}
+
+/* Top Lists */
+.top-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.top-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition-fast);
+}
+
+.top-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(4px);
+}
+
+.top-rank {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-bg-soft);
+    color: var(--accent);
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.top-item:nth-child(1) .top-rank {
+    background: gold;
+    color: #000;
+}
+
+.top-item:nth-child(2) .top-rank {
+    background: silver;
+    color: #000;
+}
+
+.top-item:nth-child(3) .top-rank {
+    background: #cd7f32;
+    color: #000;
+}
+
+.top-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.top-name {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.top-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
