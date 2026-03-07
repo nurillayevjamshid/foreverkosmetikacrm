@@ -1020,6 +1020,7 @@ function refreshDashboard() {
         } else {
             demoList.innerHTML = sortedRegions.map(function (r) {
                 var count = regionCount[r];
+                var sum = regionSum[r] || 0;
                 var percent = Math.round((count / (salesArr.length || 1)) * 100);
                 return '<div class="demographic-item">' +
                     '<div class="region-icon"><i class="fas fa-location-dot"></i></div>' +
@@ -1027,6 +1028,7 @@ function refreshDashboard() {
                     '<span class="region-name">' + escapeHtml(r) + '</span>' +
                     '<span class="region-count">' + count + ' ta sotuv</span>' +
                     '</div>' +
+                    '<div class="region-sum">' + formatMoney(sum) + '</div>' +
                     '<div class="region-progress-wrap">' +
                     '<div class="region-progress-bar"><div class="region-progress-fill" style="width: ' + percent + '%"></div></div>' +
                     '<span class="region-percent">' + percent + '%</span>' +
