@@ -151,14 +151,10 @@ function navigateTo(pageName) {
 }
 
 function updateUIVisibility(currentPage) {
-    // Role-based UI visibility
+    // Xodimlar bo'limi doimiy ravishda ko'rinib turishi kerak
     var staffNavItem = document.querySelector('.nav-item[data-page="staff"]');
     if (staffNavItem) {
-        var is_Admin = (currentUserRole === 'admin');
-        staffNavItem.style.display = is_Admin ? 'block' : 'none';
-        if (currentPage === 'staff' && !is_Admin) {
-            navigateTo('dashboard');
-        }
+        staffNavItem.style.display = 'block';
     }
 }
 
