@@ -2175,7 +2175,7 @@ html[data-theme="light"] .image-upload-area {
 }
 
 .dashboard-main-grid .card {
-    min-height: 520px;
+    height: 350px;
     display: flex;
     flex-direction: column;
 }
@@ -2476,12 +2476,6 @@ html[data-theme="light"] .tooltip-value {
 .top-meta {
     font-size: 0.75rem;
     color: var(--text-muted);
-}
-
-/* Limit top items height so card doesn't get too long */
-.top-items-card .card-body {
-    max-height: 360px;
-    overflow-y: auto;
 }
 
 html[data-theme="light"] .top-item {
