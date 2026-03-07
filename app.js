@@ -959,7 +959,8 @@ function editUser(id) {
     document.getElementById('newUserRole').value = u.role || 'manager';
     document.getElementById('newUserEmail').disabled = true;
     document.getElementById('newUserPassword').required = false;
-    document.getElementById('passGroup').style.display = 'none';
+    document.getElementById('newUserPassword').placeholder = "O'zgartirish uchun yangi parol kiriting (ixtiyoriy)";
+    document.getElementById('passGroup').style.display = 'block'; // Tahrirlashda ham parolni ko'rish/o'zgartirish mumkin
     document.getElementById('userModalTitle').innerHTML = '<i class="fas fa-user-edit"></i> Xodimni tahrirlash';
     openModal('userModal');
 }
@@ -976,10 +977,16 @@ document.getElementById('userForm').addEventListener('submit', function (e) {
     btn.textContent = 'Saqlanmoqda...';
 
     if (id) {
-        db.collection("users").doc(id).update({
+        var updateData = {
             name: name,
             role: document.getElementById('newUserRole').value
-        }).then(function () {
+        };
+        // Agar parol kiritilgan bo'lsa, uni ham bazada yangilaymiz
+        if (password) {
+            updateData.password = password;
+        }
+
+        db.collection("users").doc(id).update(updateData).then(function () {
             showToast("Xodim ma'lumotlari yangilandi!");
             closeModal('userModal');
             btn.disabled = false;
@@ -999,17 +1006,17 @@ document.getElementById('userForm').addEventListener('submit', function (e) {
         var secondaryAuth = secondaryApp.auth();
 
         secondaryAuth.createUserWithEmailAndPassword(email, password).then(function (cred) {
-            // Save user info to Firestore
+            // Firestore-ga barcha ma'lumotlarni, jumladan parolni ham saqlaymiz
             return db.collection("users").doc(cred.user.uid).set({
                 name: name,
                 email: email,
                 role: document.getElementById('newUserRole').value,
-                password: password, // Store password in Firestore for visibility
+                password: password, // Asosiy admin ko'rishi uchun
                 createdAt: new Date().toISOString()
             });
         }).then(function () {
             secondaryAuth.signOut();
-            showToast("Yangi xodim qo'shildi!");
+            showToast("Yangi xodim qo'shildi va paroli bazaga saqlandi!");
             closeModal('userModal');
             btn.disabled = false;
             btn.textContent = 'Saqlash';
