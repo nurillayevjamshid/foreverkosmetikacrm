@@ -887,11 +887,15 @@ function initUzbMap() {
         if (svg) {
             svg.setAttribute('width', '100%');
             svg.setAttribute('height', 'auto');
+            svg.style.overflow = 'visible';
             var paths = svg.querySelectorAll('path');
+
+            // Hudud nomlarini bir marta chiqarish uchun
+            var labeledRegions = new Set();
+
             paths.forEach(function (p) {
                 p.classList.add('map-path');
-                // ID-ni chiroyli nomga aylantirish (mapping)
-                var id = p.id;
+                var id = p.id || "";
                 var regionName = "";
                 if (id === 'andijan') regionName = "Andijon";
                 else if (id === 'bukhara') regionName = "Buxoro";
@@ -905,18 +909,50 @@ function initUzbMap() {
                 else if (id === 'sirdaryo') regionName = "Sirdaryo";
                 else if (id === 'surxondaryo') regionName = "Surxondaryo";
                 else if (id === 'xorazm') regionName = "Xorazm";
-                else if (id === 'tashkent') regionName = "Toshkent shahri"; // Default
-                p.setAttribute('data-region', regionName);
+                else if (id === 'tashkent') regionName = "Toshkent";
+                else if (id === 'aral-sea') regionName = "Orol dengizi";
+
+                if (regionName) {
+                    p.setAttribute('data-region', regionName);
+
+                    // Label qo'shish (faqat bir marta har bir hudud uchun)
+                    if (!labeledRegions.has(regionName) && regionName !== "Orol dengizi") {
+                        labeledRegions.add(regionName);
+                        // BBox orqali markazni hisoblash
+                        // SVG renderingdan keyin ishlaydi
+                        setTimeout(function () {
+                            try {
+                                var bbox = p.getBBox();
+                                var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                                // Tashkent shahri juda kichik, uni biroz surish kerak bo'lishi mumkin
+                                var x = bbox.x + bbox.width / 2;
+                                var y = bbox.y + bbox.height / 2;
+
+                                // Maxsus korreksiyalar
+                                if (id === 'andijan') { x += 5; }
+                                if (id === 'fergana') { y += 10; }
+                                if (id === 'namangan') { y -= 5; }
+
+                                text.setAttribute("x", x);
+                                text.setAttribute("y", y);
+                                text.setAttribute("text-anchor", "middle");
+                                text.setAttribute("class", "map-label");
+                                text.textContent = regionName;
+                                svg.appendChild(text);
+                            } catch (e) { }
+                        }, 100);
+                    }
+                }
 
                 // Tooltip events
                 p.addEventListener('mousemove', function (e) {
                     var tooltip = document.getElementById('mapTooltip');
-                    var name = this.getAttribute('data-region');
+                    var name = this.getAttribute('data-region') || "Noma'lum";
                     var count = this.getAttribute('data-count') || 0;
-                    tooltip.innerHTML = '<strong>' + name + '</strong>' + count + ' ta sotuv';
+                    tooltip.innerHTML = '<strong>' + name + '</strong> ' + count + ' ta sotuv';
                     tooltip.style.display = 'block';
-                    tooltip.style.left = e.pageX + 10 + 'px';
-                    tooltip.style.top = e.pageY + 10 + 'px';
+                    tooltip.style.left = e.pageX + 15 + 'px';
+                    tooltip.style.top = e.pageY + 15 + 'px';
                 });
                 p.addEventListener('mouseleave', function () {
                     document.getElementById('mapTooltip').style.display = 'none';
@@ -924,7 +960,7 @@ function initUzbMap() {
             });
         }
         isMapInitialized = true;
-        refreshDashboard(); // SVG yuklangandan so'ng qayta yangilash
+        setTimeout(refreshDashboard, 200); // Label va xarita to'liq rendered bo'lishi uchun
     });
 }
 
