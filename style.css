@@ -2203,6 +2203,12 @@ html[data-theme="light"] .image-upload-area {
     gap: 12px;
 }
 
+/* Limit expense list height so only ~2 items are visible, rest via scroll */
+.expense-card .card-body {
+    max-height: 190px;
+    overflow-y: auto;
+}
+
 .expense-row {
     display: flex;
     align-items: center;
