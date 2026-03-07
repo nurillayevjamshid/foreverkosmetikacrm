@@ -2205,7 +2205,7 @@ html[data-theme="light"] .image-upload-area {
 
 /* Limit expense list height so only ~2 items are visible, rest via scroll */
 .expense-card .card-body {
-    max-height: 220px;
+    max-height: 250px;
     overflow-y: auto;
 }
 
