@@ -184,10 +184,96 @@ sidebarOverlay.addEventListener('click', function () {
 });
 
 // ==========================================
-// FINANCE CATEGORIES
+// CATEGORY METADATA (WITH ICONS)
 // ==========================================
+var categoryIcons = {
+    // Finance Categories
+    'Sotuv daromadi': { icon: 'fa-shopping-bag', color: '#10b981' },
+    'Boshqa kirim': { icon: 'fa-plus-circle', color: '#3b82f6' },
+    "Qaytarilgan mablag'": { icon: 'fa-undo', color: '#f59e0b' },
+    'Investitsiya': { icon: 'fa-hand-holding-usd', color: '#8b5cf6' },
+    'Target': { icon: 'fa-bullseye', color: '#ef4444' },
+    'Yandex': { icon: 'fa-taxi', color: '#fcd34d' },
+    'Pochta': { icon: 'fa-envelope', color: '#64748b' },
+    // Product Categories
+    'Yuz kremi': { icon: 'fa-sparkles', color: '#f472b6' },
+    'Parfyumeriya': { icon: 'fa-spray-can', color: '#a78bfa' },
+    'Soqol parvarishi': { icon: 'fa-user-ninja', color: '#4b5563' },
+    'Soch parvarishi': { icon: 'fa-scissors', color: '#fbbf24' },
+    'Tana parvarishi': { icon: 'fa-spa', color: '#34d399' },
+    'Atir': { icon: 'fa-bottle-droplet', color: '#ec4899' },
+    'Dezodorant': { icon: 'fa-wind', color: '#60a5fa' },
+    'Boshqa': { icon: 'fa-box', color: '#94a3b8' }
+};
+
 var incomeCategories = ['Sotuv daromadi', 'Boshqa kirim', "Qaytarilgan mablag'", 'Investitsiya'];
 var expenseCategories = ['Target', 'Yandex', 'Pochta'];
+var allProductCategories = ['Yuz kremi', 'Parfyumeriya', 'Soqol parvarishi', 'Soch parvarishi', 'Tana parvarishi', 'Atir', 'Dezodorant', 'Boshqa'];
+var allRegions = ["Toshkent shahri", "Toshkent viloyati", "Andijon", "Buxoro", "Farg'ona", "Jizzax", "Namangan", "Navoiy", "Qashqadaryo", "Samarqand", "Sirdaryo", "Surxondaryo", "Xorazm", "Qoraqalpog'iston"];
+
+// ==========================================
+// SELECT PICKER SYSTEM
+// ==========================================
+function setSelectValue(pickerId, value, label) {
+    var picker = document.getElementById(pickerId);
+    if (!picker) return;
+    var input = picker.querySelector('input[type="hidden"]');
+    var triggerLabel = picker.querySelector('.select-trigger-label');
+    var options = picker.querySelectorAll('.select-option');
+
+    if (input) input.value = value;
+    if (triggerLabel) triggerLabel.textContent = label || value || 'Tanlang...';
+
+    options.forEach(function (opt) {
+        opt.classList.toggle('selected', opt.dataset.value === value);
+    });
+}
+
+function initSelectPicker(pickerId, options, onSelect) {
+    var picker = document.getElementById(pickerId);
+    if (!picker) return;
+    var trigger = picker.querySelector('.select-trigger');
+    var dropdown = picker.querySelector('.select-dropdown');
+
+    // Build options if provided
+    if (options && options.length > 0) {
+        dropdown.innerHTML = options.map(function (opt) {
+            var val = typeof opt === 'string' ? opt : opt.value;
+            var lab = typeof opt === 'string' ? opt : opt.label;
+            var meta = categoryIcons[val] || { icon: 'fa-circle-dot', color: 'currentColor' };
+            return '<button type="button" class="select-option" data-value="' + val + '" data-label="' + lab + '">' +
+                '<i class="fas ' + meta.icon + '" style="color:' + meta.color + '"></i>' +
+                '<span>' + lab + '</span>' +
+                '</button>';
+        }).join('');
+    }
+
+    // Toggle dropdown
+    trigger.onclick = function (e) {
+        e.stopPropagation();
+        var isOpen = picker.classList.contains('open');
+        document.querySelectorAll('.select-picker.open').forEach(function (p) { p.classList.remove('open'); });
+        if (!isOpen) picker.classList.add('open');
+    };
+
+    // Option click
+    dropdown.onclick = function (e) {
+        var opt = e.target.closest('.select-option');
+        if (!opt) return;
+        var val = opt.dataset.value;
+        var lab = opt.dataset.label;
+        setSelectValue(pickerId, val, lab);
+        picker.classList.remove('open');
+        if (onSelect) onSelect(val, lab);
+    };
+}
+
+// Close pickers on outside click
+document.addEventListener('click', function () {
+    document.querySelectorAll('.select-picker.open').forEach(function (p) {
+        p.classList.remove('open');
+    });
+});
 
 // ==========================================
 // DATA STATE
@@ -272,11 +358,9 @@ function editProduct(id) {
     if (!p) return;
     document.getElementById('productId').value = p.id;
     document.getElementById('productName').value = p.name;
-    document.getElementById('productCategory').value = p.category;
-    document.getElementById('productPrice').value = p.price;
-    document.getElementById('productStatus').value = p.status || 'active';
-    document.getElementById('productCost').value = p.cost || '';
-    document.getElementById('productDescription').value = p.description || '';
+    initSelectPicker('productCategoryPicker', allProductCategories);
+    setSelectValue('productCategoryPicker', p.category, p.category);
+    setSelectValue('productStatusPicker', p.status || 'active', (p.status || 'active') === 'active' ? 'Active' : 'Inactive');
     document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-box-open"></i> Mahsulotni tahrirlash';
     // Mavjud rasmni ko'rsatish
     resetImageUpload();
@@ -291,10 +375,18 @@ function editProduct(id) {
 document.getElementById('addProductBtn').addEventListener('click', function () {
     document.getElementById('productForm').reset();
     document.getElementById('productId').value = '';
+    initSelectPicker('productCategoryPicker', allProductCategories);
+    setSelectValue('productCategoryPicker', '', 'Tanlang...');
+    setSelectValue('productStatusPicker', 'active', 'Active');
     document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-box-open"></i> Yangi Mahsulot';
     resetImageUpload();
     openModal('productModal');
 });
+
+// Generic Status Picker
+initSelectPicker('productStatusPicker');
+initSelectPicker('newUserRolePicker');
+
 
 document.getElementById('productForm').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -594,7 +686,8 @@ function editSale(id) {
     document.getElementById('saleId').value = s.id;
     document.getElementById('saleDate').value = s.date;
     document.getElementById('saleName').value = s.name || '';
-    document.getElementById('saleRegion').value = s.region || '';
+    initSelectPicker('saleRegionPicker', allRegions);
+    setSelectValue('saleRegionPicker', s.region || '', s.region || 'Tanlang...');
     document.getElementById('saleNote').value = s.note || '';
 
     // Clear and fill rows
@@ -618,6 +711,8 @@ document.getElementById('addSaleBtn').addEventListener('click', function () {
     document.getElementById('saleDate').value = getTodayStr();
     document.getElementById('saleItemsList').innerHTML = '';
     addSaleItemRow();
+    initSelectPicker('saleRegionPicker', allRegions);
+    setSelectValue('saleRegionPicker', '', 'Tanlang...');
     document.getElementById('saleTotalDisplay').textContent = "0 so'm";
     document.getElementById('saleModalTitle').innerHTML = '<i class="fas fa-shopping-cart"></i> Yangi Sotuv';
     openModal('saleModal');
@@ -688,10 +783,9 @@ document.getElementById('saleForm').addEventListener('submit', function (e) {
 // === FINANCE CRUD ===
 // ==========================================
 function populateFinanceCategories(type) {
-    var select = document.getElementById('financeCategory');
-    select.innerHTML = '<option value="">Tanlang...</option>';
     var cats = type === 'income' ? incomeCategories : expenseCategories;
-    cats.forEach(function (c) { select.innerHTML += '<option value="' + c + '">' + c + '</option>'; });
+    initSelectPicker('financeCategoryPicker', cats);
+    setSelectValue('financeCategoryPicker', '', 'Tanlang...');
 }
 
 function renderFinance(searchTerm) {
@@ -729,7 +823,7 @@ function editFinance(id) {
     var isInc = f.type === 'income';
     document.getElementById('financeModalTitle').innerHTML = isInc ? '<i class="fas fa-arrow-circle-down" style="color:var(--success)"></i> Kirimni tahrirlash' : '<i class="fas fa-arrow-circle-up" style="color:var(--danger)"></i> Chiqimni tahrirlash';
     populateFinanceCategories(f.type);
-    document.getElementById('financeCategory').value = f.category;
+    setSelectValue('financeCategoryPicker', f.category, f.category);
     openModal('financeModal');
 }
 
@@ -1042,6 +1136,8 @@ document.getElementById('addUserBtn').addEventListener('click', function () {
     document.getElementById('newUserEmail').disabled = false;
     document.getElementById('newUserPassword').required = true;
     document.getElementById('passGroup').style.display = 'block';
+    initSelectPicker('newUserRolePicker');
+    setSelectValue('newUserRolePicker', 'manager', 'Manager (Cheklangan)');
     document.getElementById('userModalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Yangi xodim qo\'shish';
     openModal('userModal');
 });
@@ -1053,7 +1149,10 @@ function editUser(id) {
     document.getElementById('editUserId').value = u.id;
     document.getElementById('newUserName').value = u.name;
     document.getElementById('newUserEmail').value = u.email;
-    document.getElementById('newUserRole').value = u.role || 'manager';
+    initSelectPicker('newUserRolePicker');
+    var roleVal = u.role || 'manager';
+    var roleLab = roleVal === 'admin' ? 'Admin (To\'liq huquq)' : 'Manager (Cheklangan)';
+    setSelectValue('newUserRolePicker', roleVal, roleLab);
     document.getElementById('newUserEmail').disabled = true;
     document.getElementById('newUserPassword').required = false;
     document.getElementById('newUserPassword').placeholder = "O'zgartirish uchun yangi parol kiriting (ixtiyoriy)";
