@@ -989,59 +989,15 @@ function refreshDashboard() {
     document.getElementById('totalProfit').textContent = formatMoney(inc - exp);
     document.getElementById('totalSalesCount').textContent = salesArr.length;
 
-    // 1. CHART: Sales Dynamics (Last 6 Months)
-    var ctx = document.getElementById('salesDynamicsChart');
-    if (ctx) {
-        var months = [];
-        var values = [];
-        var now = new Date();
-        for (var i = 5; i >= 0; i--) {
-            var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            var mName = d.toLocaleString('uz-UZ', { month: 'short' });
-            months.push(mName);
-
-            var monthSales = salesArr.filter(function (s) {
-                var sd = new Date(s.date);
-                return sd.getMonth() === d.getMonth() && sd.getFullYear() === d.getFullYear();
-            }).reduce(function (sum, s) { return sum + (s.totalAmount || 0); }, 0);
-            values.push(monthSales);
-        }
-
-        if (salesChart) salesChart.destroy();
-        salesChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: 'Sotuv summasi',
-                    data: values,
-                    backgroundColor: 'rgba(99, 102, 241, 0.5)',
-                    borderColor: '#6366f1',
-                    borderWidth: 2,
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
-                }
-            }
-        });
-    }
-
-    // 2. MAP: Region stats
+    // 1. MAP & REGION STATS
     var regionCount = {};
     var regionSum = {};
-    var maxSales = 0;
+    var maxCount = 0;
     salesArr.forEach(function (s) {
         var r = s.region || "Noma'lum";
         regionCount[r] = (regionCount[r] || 0) + 1;
         regionSum[r] = (regionSum[r] || 0) + (s.totalAmount || 0);
-        if (regionCount[r] > maxSales) maxSales = regionCount[r];
+        if (regionCount[r] > maxCount) maxCount = regionCount[r];
     });
 
     // Update Map paths
@@ -1052,18 +1008,18 @@ function refreshDashboard() {
         p.setAttribute('data-count', count);
         p.setAttribute('data-sum', sum);
         p.classList.toggle('has-data', count > 0);
-        p.classList.toggle('top-region', count > 0 && count === maxSales);
+        p.classList.toggle('top-region', count > 0 && count === maxCount);
     });
 
-    // 3. REGIONS LIST
+    // 2. REGIONS LIST (Sorted by count)
     var demoList = document.getElementById('demographicsList');
     if (demoList) {
-        var sortedRegions = Object.keys(regionStats).sort(function (a, b) { return regionStats[b] - regionStats[a]; }).slice(0, 5);
+        var sortedRegions = Object.keys(regionCount).sort(function (a, b) { return regionCount[b] - regionCount[a]; }).slice(0, 5);
         if (sortedRegions.length === 0) {
             demoList.innerHTML = '<p class="text-muted" style="text-align:center; padding:20px;">Hali sotuvlar geografiyasi shakllanmagan</p>';
         } else {
             demoList.innerHTML = sortedRegions.map(function (r) {
-                var count = regionStats[r];
+                var count = regionCount[r];
                 var percent = Math.round((count / (salesArr.length || 1)) * 100);
                 return '<div class="demographic-item">' +
                     '<div class="region-icon"><i class="fas fa-location-dot"></i></div>' +
@@ -1080,7 +1036,7 @@ function refreshDashboard() {
         }
     }
 
-    // 4. TOP PRODUCTS
+    // 3. TOP PRODUCTS
     var prodStats = {};
     salesArr.forEach(function (s) {
         (s.items || []).forEach(function (it) {
@@ -1106,24 +1062,27 @@ function refreshDashboard() {
         }
     }
 
-    // 5. EXPENSES
-    var expenses = financesArr.filter(function (f) { return f.type === 'expense'; }).sort(function (a, b) { return new Date(b.date) - new Date(a.date); }).slice(0, 5);
+    // 4. EXPENSES (Recent 10)
+    var expenses = financesArr.filter(function (f) { return f.type === 'expense'; }).sort(function (a, b) { return new Date(b.date) - new Date(a.date); }).slice(0, 10);
     var tbody = document.getElementById('dashExpenseBody');
     var emptyE = document.getElementById('dashEmptyExpense');
     var table = document.getElementById('dashExpenseTable');
 
     if (expenses.length === 0) {
-        tbody.innerHTML = '';
+        if (tbody) tbody.innerHTML = '';
         if (emptyE) emptyE.style.display = 'block';
         if (table) table.style.display = 'none';
     } else {
         if (emptyE) emptyE.style.display = 'none';
         if (table) table.style.display = '';
-        tbody.innerHTML = expenses.map(function (f, i) {
-            return '<tr><td>' + formatDate(f.date) + '</td><td>' + escapeHtml(f.description || '—') + '</td><td class="amount-negative">-' + formatMoney(f.amount) + '</td></tr>';
-        }).join('');
+        if (tbody) {
+            tbody.innerHTML = expenses.map(function (f) {
+                return '<tr><td>' + formatDate(f.date) + '</td><td>' + escapeHtml(f.description || '—') + '</td><td class="amount-negative">-' + formatMoney(f.amount) + '</td></tr>';
+            }).join('');
+        }
     }
 }
+
 
 // ==========================================
 // === SETTINGS: THEME MODE ===
