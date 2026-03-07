@@ -882,7 +882,6 @@ function refreshDashboard() {
     document.getElementById('totalIncome').textContent = formatMoney(inc);
     document.getElementById('totalExpense').textContent = formatMoney(exp);
     document.getElementById('totalProfit').textContent = formatMoney(inc - exp);
-    document.getElementById('totalSalesCount').textContent = salesArr.length;
 
     // 1. REGION STATS
     var regionCount = {};

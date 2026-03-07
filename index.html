@@ -114,53 +114,62 @@
             <section class="page active" id="page-dashboard">
                 <!-- Stats Cards -->
                 <div class="stats-grid">
-                    <div class="stat-card stat-income">
-                        <div class="stat-icon">
-                            <i class="fas fa-arrow-down"></i>
+                    <!-- Card 1: Umumiy Balans -->
+                    <div class="stat-card stat-total-balance">
+                        <div class="stat-card-inner">
+                            <div class="stat-card-header">
+                                <span class="stat-label">Umumiy balans</span>
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-value" id="totalIncome">0</span>
+                                <div class="stat-trend">
+                                    <i class="fas fa-arrow-trend-up"></i>
+                                    <span>O'tgan oyga nisbatan +2.5%</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Jami Kirim</span>
-                            <span class="stat-value" id="totalIncome">0</span>
-                        </div>
-                        <div class="stat-trend up">
-                            <i class="fas fa-trending-up"></i>
-                        </div>
+                        <div class="stat-decoration"></div>
                     </div>
-                    <div class="stat-card stat-expense">
-                        <div class="stat-icon">
-                            <i class="fas fa-arrow-up"></i>
+                    <!-- Card 2: Sof Foyda -->
+                    <div class="stat-card stat-net-profit">
+                        <div class="stat-card-inner">
+                            <div class="stat-card-header">
+                                <span class="stat-label">Sof foyda</span>
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-value" id="totalProfit">0</span>
+                                <div class="stat-trend">
+                                    <i class="fas fa-arrow-trend-up"></i>
+                                    <span>O'tgan oyga nisbatan +1.2%</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Jami Chiqim</span>
-                            <span class="stat-value" id="totalExpense">0</span>
-                        </div>
-                        <div class="stat-trend down">
-                            <i class="fas fa-trending-down"></i>
-                        </div>
+                        <div class="stat-decoration"></div>
                     </div>
-                    <div class="stat-card stat-profit">
-                        <div class="stat-icon">
-                            <i class="fas fa-chart-pie"></i>
+                    <!-- Card 3: Chiqim -->
+                    <div class="stat-card stat-total-expense">
+                        <div class="stat-card-inner">
+                            <div class="stat-card-header">
+                                <span class="stat-label">Chiqim</span>
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-arrow-up-right-from-square"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-value" id="totalExpense">0</span>
+                                <div class="stat-trend">
+                                    <i class="fas fa-arrow-trend-down"></i>
+                                    <span>O'tgan oyga nisbatan -5.4%</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Sof Foyda</span>
-                            <span class="stat-value" id="totalProfit">0</span>
-                        </div>
-                        <div class="stat-trend up">
-                            <i class="fas fa-trending-up"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card stat-sales">
-                        <div class="stat-icon">
-                            <i class="fas fa-receipt"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-label">Jami Sotuvlar</span>
-                            <span class="stat-value" id="totalSalesCount">0</span>
-                        </div>
-                        <div class="stat-trend">
-                            <span>dona</span>
-                        </div>
+                        <div class="stat-decoration"></div>
                     </div>
                 </div>
 
