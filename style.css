@@ -681,6 +681,28 @@ html[data-theme="light"] .data-table tbody tr td:last-child {
     flex-wrap: wrap;
 }
 
+.filter-select {
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    min-width: 140px;
+}
+
+html[data-theme="light"] .filter-select {
+    background: #ffffff;
+    border-color: #e2e8f0;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
 .search-box {
     display: flex;
     align-items: center;

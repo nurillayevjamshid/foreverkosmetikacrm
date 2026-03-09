@@ -236,6 +236,9 @@
                     <button class="btn btn-primary" id="addSaleBtn">
                         <i class="fas fa-plus"></i> Yangi Sotuv
                     </button>
+                    <select id="salesRegionFilter" class="filter-select">
+                        <option value="all">Barcha viloyatlar</option>
+                    </select>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" id="salesSearch" placeholder="Qidirish...">
@@ -319,6 +322,14 @@
                     <button class="btn btn-danger" id="addExpenseBtn">
                         <i class="fas fa-minus"></i> Chiqim qo'shish
                     </button>
+                    <select id="financeTypeFilter" class="filter-select">
+                        <option value="all">Barchasi</option>
+                        <option value="income">Faqat kirim</option>
+                        <option value="expense">Faqat chiqim</option>
+                    </select>
+                    <select id="financeCategoryFilter" class="filter-select">
+                        <option value="all">Barcha kategoriyalar</option>
+                    </select>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" id="financeSearch" placeholder="Qidirish...">
@@ -407,6 +418,14 @@
                     <button class="btn btn-primary" id="addProductBtn">
                         <i class="fas fa-plus"></i> Yangi Mahsulot
                     </button>
+                    <select id="productsCategoryFilter" class="filter-select">
+                        <option value="all">Barcha kategoriyalar</option>
+                    </select>
+                    <select id="productsStatusFilter" class="filter-select">
+                        <option value="all">Barcha statuslar</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" id="productsSearch" placeholder="Qidirish...">

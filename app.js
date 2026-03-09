@@ -405,6 +405,11 @@ var salesArr = [];
 var financesArr = [];
 var usersArr = [];
 
+// Filter holatlari
+var salesFilter = { region: 'all' };
+var financeFilter = { type: 'all', category: 'all' };
+var productsFilter = { category: 'all', status: 'all' };
+
 // ==========================================
 // REAL-TIME FIRESTORE LISTENERS
 // ==========================================
@@ -448,6 +453,14 @@ function renderProducts(searchTerm) {
     // Yordamchi adminlar faqat active mahsulotlarni ko'radi
     if (currentUserRole !== 'admin') {
         filtered = filtered.filter(function (p) { return (p.status || 'active') !== 'inactive'; });
+    }
+    // Filter: kategoriya
+    if (productsFilter.category !== 'all') {
+        filtered = filtered.filter(function (p) { return (p.category || '') === productsFilter.category; });
+    }
+    // Filter: status
+    if (productsFilter.status !== 'all') {
+        filtered = filtered.filter(function (p) { return (p.status || 'active') === productsFilter.status; });
     }
     if (filtered.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
     empty.style.display = 'none';
@@ -782,6 +795,10 @@ function renderSales(searchTerm) {
                 s.date.includes(q);
         });
     }
+    // Filter: region
+    if (salesFilter.region !== 'all') {
+        filtered = filtered.filter(function (s) { return (s.region || '') === salesFilter.region; });
+    }
     if (filtered.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
     empty.style.display = 'none';
     tbody.innerHTML = filtered.map(function (s, i) {
@@ -982,6 +999,14 @@ function renderFinance(searchTerm) {
     if (searchTerm) {
         var q = searchTerm.toLowerCase();
         filtered = filtered.filter(function (f) { return f.category.toLowerCase().includes(q) || (f.description && f.description.toLowerCase().includes(q)) || f.date.includes(q); });
+    }
+    // Filter: turi
+    if (financeFilter.type !== 'all') {
+        filtered = filtered.filter(function (f) { return f.type === financeFilter.type; });
+    }
+    // Filter: kategoriya
+    if (financeFilter.category !== 'all') {
+        filtered = filtered.filter(function (f) { return f.category === financeFilter.category; });
     }
     var totalIncome = financesArr.filter(function (f) { return f.type === 'income'; }).reduce(function (sum, f) { return sum + f.amount; }, 0);
     var totalExpense = financesArr.filter(function (f) { return f.type === 'expense'; }).reduce(function (sum, f) { return sum + f.amount; }, 0);
@@ -1590,6 +1615,68 @@ function startTopbarClock() {
 
 startTopbarClock();
 navigateTo('dashboard');
+
+// ==========================================
+// === FILTER INIT ===
+// ==========================================
+
+// Sales – region filter selectni to‘ldirish
+(function initSalesFilter() {
+    var sel = document.getElementById('salesRegionFilter');
+    if (!sel) return;
+    allRegions.forEach(function (r) {
+        var opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        sel.appendChild(opt);
+    });
+    sel.addEventListener('change', function () {
+        salesFilter.region = this.value || 'all';
+        renderSales(document.getElementById('salesSearch').value || '');
+    });
+})();
+
+// Finance – kategoriya filter
+(function initFinanceCategoryFilter() {
+    var sel = document.getElementById('financeCategoryFilter');
+    if (!sel) return;
+    var allCats = incomeCategories.concat(expenseCategories);
+    allCats.forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        sel.appendChild(opt);
+    });
+    document.getElementById('financeTypeFilter').addEventListener('change', function () {
+        financeFilter.type = this.value || 'all';
+        renderFinance(document.getElementById('financeSearch').value || '');
+    });
+    sel.addEventListener('change', function () {
+        financeFilter.category = this.value || 'all';
+        renderFinance(document.getElementById('financeSearch').value || '');
+    });
+})();
+
+// Products – kategoriya va status filtrlar
+(function initProductsFilters() {
+    var catSel = document.getElementById('productsCategoryFilter');
+    var statusSel = document.getElementById('productsStatusFilter');
+    if (!catSel || !statusSel) return;
+    allProductCategories.forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        catSel.appendChild(opt);
+    });
+    catSel.addEventListener('change', function () {
+        productsFilter.category = this.value || 'all';
+        renderProducts(document.getElementById('productsSearch').value || '');
+    });
+    statusSel.addEventListener('change', function () {
+        productsFilter.status = this.value || 'all';
+        renderProducts(document.getElementById('productsSearch').value || '');
+    });
+})();
 
 // ==========================================
 // === FIREBASE STORAGE - RASM YUKLASH ===
