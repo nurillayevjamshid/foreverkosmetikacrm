@@ -1482,9 +1482,17 @@ function renderUsers(searchTerm) {
             '<button type="button" class="password-eye-btn" data-visible="false" title="Ko\'rsatish/Yashirish"><i class="fas fa-eye"></i></button>' +
             '</div>';
 
-        return '<tr class="user-data-row"><td>' + (i + 1) + '</td><td><span class="user-name-link">' + escapeHtml(u.name) + '</span></td><td>' + escapeHtml(u.email) + '</td><td>' + passwordHtml + '</td><td>' + roleBadge + '</td><td>' + formatDate(u.createdAt) + '</td>' +
-            '<td><button class="btn-icon edit user-edit-btn" data-id="' + u.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
-            '<button class="btn-icon delete user-delete-btn" data-id="' + u.id + '" data-name="' + escapeHtml(u.name) + '" title="O\'chirish"><i class="fas fa-trash"></i></button></td></tr>';
+        return '' +
+            '<tr class="user-data-row">' +
+            '<td data-label="#">' + (i + 1) + '</td>' +
+            '<td data-label="Ismi"><span class="user-name-link">' + escapeHtml(u.name) + '</span></td>' +
+            '<td data-label="Email (Login)">' + escapeHtml(u.email) + '</td>' +
+            '<td data-label="Parol">' + passwordHtml + '</td>' +
+            '<td data-label="Rol">' + roleBadge + '</td>' +
+            '<td data-label="Yaratilgan">' + formatDate(u.createdAt) + '</td>' +
+            '<td data-label="Amallar"><button class="btn-icon edit user-edit-btn" data-id="' + u.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
+            '<button class="btn-icon delete user-delete-btn" data-id="' + u.id + '" data-name="' + escapeHtml(u.name) + '" title="O\'chirish"><i class="fas fa-trash"></i></button></td>' +
+            '</tr>';
     }).join('');
 }
 
