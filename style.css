@@ -1769,20 +1769,28 @@ html[data-theme="light"] .form-group select option {
     }
 }
 
-/* Finance table – mobile card view
-   Faqat Kirim/Chiqim jadvali uchun (id = financeTable) */
+/* Finance / Products / Sales / Customers table – mobile card view */
 @media (max-width: 768px) {
-    #financeTable {
+    #financeTable,
+    #productsTable,
+    #salesTable,
+    #customersTable {
         min-width: 0;
         border-collapse: separate;
         border-spacing: 0;
     }
 
-    #financeTable thead {
+    #financeTable thead,
+    #productsTable thead,
+    #salesTable thead,
+    #customersTable thead {
         display: none;
     }
 
-    #financeTable tbody tr {
+    #financeTable tbody tr,
+    #productsTable tbody tr,
+    #salesTable tbody tr,
+    #customersTable tbody tr {
         display: block;
         margin-bottom: 12px;
         border-radius: 14px;
@@ -1791,11 +1799,17 @@ html[data-theme="light"] .form-group select option {
         box-shadow: var(--shadow-md);
     }
 
-    html[data-theme="light"] #financeTable tbody tr {
+    html[data-theme="light"] #financeTable tbody tr,
+    html[data-theme="light"] #productsTable tbody tr,
+    html[data-theme="light"] #salesTable tbody tr,
+    html[data-theme="light"] #customersTable tbody tr {
         background: #ffffff;
     }
 
-    #financeTable tbody td {
+    #financeTable tbody td,
+    #productsTable tbody td,
+    #salesTable tbody td,
+    #customersTable tbody td {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -1805,11 +1819,17 @@ html[data-theme="light"] .form-group select option {
         white-space: normal;
     }
 
-    #financeTable tbody td:last-child {
+    #financeTable tbody td:last-child,
+    #productsTable tbody td:last-child,
+    #salesTable tbody td:last-child,
+    #customersTable tbody td:last-child {
         border-bottom: none;
     }
 
-    #financeTable tbody td::before {
+    #financeTable tbody td::before,
+    #productsTable tbody td::before,
+    #salesTable tbody td::before,
+    #customersTable tbody td::before {
         content: attr(data-label);
         font-weight: 600;
         font-size: 11px;
@@ -1818,12 +1838,18 @@ html[data-theme="light"] .form-group select option {
         flex-shrink: 0;
     }
 
-    #financeTable tbody td[data-label="Amallar"] {
+    #financeTable tbody td[data-label="Amallar"],
+    #productsTable tbody td[data-label="Amallar"],
+    #salesTable tbody td[data-label="Amallar"],
+    #customersTable tbody td[data-label="Amallar"] {
         justify-content: flex-end;
         gap: 6px;
     }
 
-    #financeTable tbody td[data-label="Amallar"]::before {
+    #financeTable tbody td[data-label="Amallar"]::before,
+    #productsTable tbody td[data-label="Amallar"]::before,
+    #salesTable tbody td[data-label="Amallar"]::before,
+    #customersTable tbody td[data-label="Amallar"]::before {
         display: none;
     }
 }

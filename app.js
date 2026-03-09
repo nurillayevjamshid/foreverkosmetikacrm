@@ -458,15 +458,16 @@ function renderProducts(searchTerm) {
         var imageHtml = p.imageUrl
             ? '<div class="product-list-thumb"><img src="' + p.imageUrl + '" alt="' + escapeHtml(p.name) + '"></div>'
             : '<div class="product-list-thumb"><div class="product-list-thumb-placeholder">' + (escapeHtml(p.name || 'M')[0] || 'M') + '</div></div>';
-        return '<tr>' +
-            '<td>' + (i + 1) + '</td>' +
-            '<td><div class="product-list-info">' + imageHtml +
+        return '' +
+            '<tr>' +
+            '<td data-label="#">' + (i + 1) + '</td>' +
+            '<td data-label="Mahsulot"><div class="product-list-info">' + imageHtml +
             '<div class="product-list-meta"><span class="product-list-name">' + escapeHtml(p.name) + '</span></div></div></td>' +
-            '<td>' + escapeHtml(p.category || 'вЂ”') + '</td>' +
-            '<td>' + formatMoney(p.price) + '</td>' +
-            '<td>' + (p.cost ? formatMoney(p.cost) : '\u2014') + '</td>' +
-            '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>' +
-            '<td>' +
+            '<td data-label="Kategoriya">' + escapeHtml(p.category || 'вЂ”') + '</td>' +
+            '<td data-label="Narx">' + formatMoney(p.price) + '</td>' +
+            '<td data-label="Tannarx">' + (p.cost ? formatMoney(p.cost) : '\u2014') + '</td>' +
+            '<td data-label="Status"><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>' +
+            '<td data-label="Amallar">' +
             '<button class="btn-icon edit product-edit-btn" data-id="' + p.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
             '<button class="btn-icon delete product-delete-btn" data-id="' + p.id + '" data-name="' + escapeHtml(p.name) + '" data-storage-path="' + (p.imageStoragePath || '') + '" title="O\'chirish"><i class="fas fa-trash"></i></button>' +
             '</td>' +
@@ -804,9 +805,17 @@ function renderSales(searchTerm) {
             return (p ? p.name : '—') + ' (x' + it.quantity + ')';
         }).join(', ');
 
-        return '<tr class="sale-data-row"><td>' + (i + 1) + '</td><td><div class="sale-date-cell"><i class="far fa-calendar-alt"></i> ' + formatDate(s.date) + '</div></td><td><span class="sale-user-name">' + escapeHtml(s.name || '—') + '</span></td><td><div class="sale-region-badge"><i class="fas fa-location-dot"></i> ' + escapeHtml(s.region || '—') + '</div></td><td title="' + fullItemsText + '"><div class="sale-items-wrap">' + itemsHtml + '</div></td><td class="amount-highlight">' + formatMoney(s.totalAmount) + '</td>' +
-            '<td><div class="sale-actions-wrap"><button class="btn-icon edit sale-edit-btn" data-id="' + s.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
-            '<button class="btn-icon delete sale-delete-btn" data-id="' + s.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button></div></td></tr>';
+        return '' +
+            '<tr class="sale-data-row">' +
+            '<td data-label="#">' + (i + 1) + '</td>' +
+            '<td data-label="Sana"><div class="sale-date-cell"><i class="far fa-calendar-alt"></i> ' + formatDate(s.date) + '</div></td>' +
+            '<td data-label="Nomi"><span class="sale-user-name">' + escapeHtml(s.name || '—') + '</span></td>' +
+            '<td data-label="Viloyat"><div class="sale-region-badge"><i class="fas fa-location-dot"></i> ' + escapeHtml(s.region || '—') + '</div></td>' +
+            '<td data-label="Mahsulotlar" title="' + fullItemsText + '"><div class="sale-items-wrap">' + itemsHtml + '</div></td>' +
+            '<td data-label="Jami summa" class="amount-highlight">' + formatMoney(s.totalAmount) + '</td>' +
+            '<td data-label="Amallar"><div class="sale-actions-wrap"><button class="btn-icon edit sale-edit-btn" data-id="' + s.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
+            '<button class="btn-icon delete sale-delete-btn" data-id="' + s.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button></div></td>' +
+            '</tr>';
     }).join('');
 }
 
@@ -1718,16 +1727,17 @@ function renderCustomers(searchQuery) {
                 var debt = c.debt || 0;
                 var debtClass = debt > 0 ? 'amount-negative' : '';
 
-                return '<tr>' +
-                    '<td>' + (i + 1) + '</td>' +
-                    '<td><div style="font-weight:600">' + escapeHtml(c.name) + '</div>' + (c.birthday ? '<div style="font-size:0.75rem; color:var(--text-muted)"><i class="fas fa-birthday-cake"></i> ' + c.birthday + '</div>' : '') + '</td>' +
-                    '<td>' + phoneDisplay + '</td>' +
-                    '<td>' + escapeHtml(c.region || '-') + '</td>' +
-                    '<td>' + (c.salesCount || 0) + '</td>' +
-                    '<td>' + formatMoney(totalSpent) + '</td>' +
-                    '<td class="' + debtClass + '">' + formatMoney(debt) + '</td>' +
-                    '<td>' + vipBadge + '</td>' +
-                    '<td>' +
+                return '' +
+                    '<tr>' +
+                    '<td data-label="#">' + (i + 1) + '</td>' +
+                    '<td data-label="Mijoz ismi"><div style="font-weight:600">' + escapeHtml(c.name) + '</div>' + (c.birthday ? '<div style="font-size:0.75rem; color:var(--text-muted)"><i class="fas fa-birthday-cake"></i> ' + c.birthday + '</div>' : '') + '</td>' +
+                    '<td data-label="Telefon / Telegram">' + phoneDisplay + '</td>' +
+                    '<td data-label="Viloyat">' + escapeHtml(c.region || '-') + '</td>' +
+                    '<td data-label="Sotuvlar soni">' + (c.salesCount || 0) + '</td>' +
+                    '<td data-label="Umumiy savdo">' + formatMoney(totalSpent) + '</td>' +
+                    '<td data-label="Qarz" class="' + debtClass + '">' + formatMoney(debt) + '</td>' +
+                    '<td data-label="Status">' + vipBadge + '</td>' +
+                    '<td data-label="Amallar">' +
                     '<button class="btn-icon info customer-history-btn" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '" title="Xaridlar tarixi"><i class="fas fa-history"></i></button>' +
                     '<button class="btn-icon edit customer-edit-btn" data-id="' + c.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
                     '<button class="btn-icon delete customer-delete-btn" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '" title="O\'chirish"><i class="fas fa-trash"></i></button>' +
