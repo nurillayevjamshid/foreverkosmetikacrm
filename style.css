@@ -1480,7 +1480,7 @@ html[data-theme="light"] .form-group select option {
         padding: 16px 14px 20px;
     }
 
-    /* Dashboard cards */
+    /* Dashboard & finance cards */
     .stats-grid {
         grid-template-columns: 1fr 1fr;
         gap: 12px;
@@ -1574,6 +1574,27 @@ html[data-theme="light"] .form-group select option {
     .finance-summary {
         grid-template-columns: 1fr;
         gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .finance-summary .stat-card {
+        border-radius: 18px;
+        padding: 18px 16px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .finance-summary .stat-value {
+        font-size: 18px;
+    }
+
+    /* Finance page specific spacing */
+    #page-finance .page-actions {
+        margin-bottom: 16px;
+    }
+
+    #page-finance .card {
+        border-radius: 18px;
+        box-shadow: var(--shadow-md);
     }
 
     /* Forms & modals */
