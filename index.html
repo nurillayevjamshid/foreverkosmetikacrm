@@ -868,6 +868,30 @@
                     <label for="newUserPassword"><i class="fas fa-lock"></i> Parol</label>
                     <input type="password" id="newUserPassword" placeholder="Kamida 6 ta belgi" required minlength="6">
                 </div>
+                
+                <div class="permissions-section" style="margin-top: 20px; padding: 15px; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border);">
+                    <label style="font-weight: 600; color: var(--accent); margin-bottom: 12px; display: block;"><i class="fas fa-user-lock"></i> Bo'limlarga kirish huquqlari</label>
+                    <div class="permissions-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="perm_sales" checked> <span>Sotuvlar</span>
+                        </label>
+                        <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="perm_customers" checked> <span>Mijozlar</span>
+                        </label>
+                        <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="perm_finance" checked> <span>Kirim / Chiqim</span>
+                        </label>
+                        <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="perm_products" checked> <span>Mahsulotlar</span>
+                        </label>
+                        <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="perm_staff"> <span>Xodimlar</span>
+                        </label>
+                        <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="perm_settings"> <span>Sozlamalar</span>
+                        </label>
+                    </div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-modal="userModal">Bekor qilish</button>
                     <button type="submit" class="btn btn-primary" id="createUserBtn">Saqlash</button>
