@@ -1442,8 +1442,13 @@ html[data-theme="light"] .form-group select option {
 }
 
 @media (max-width: 768px) {
+    /* Layout */
     .sidebar {
         transform: translateX(-100%);
+        width: 86vw;
+        max-width: 340px;
+        border-radius: 0 20px 20px 0;
+        box-shadow: var(--shadow-lg);
     }
 
     .sidebar.open {
@@ -1460,67 +1465,190 @@ html[data-theme="light"] .form-group select option {
 
     .topbar {
         padding: 0 16px;
+        height: 64px;
+    }
+
+    .page-title-area h1 {
+        font-size: 18px;
+    }
+
+    .page-subtitle {
+        font-size: 12px;
     }
 
     .pages-container {
-        padding: 16px;
+        padding: 16px 14px 20px;
     }
 
+    /* Dashboard cards */
     .stats-grid {
         grid-template-columns: 1fr 1fr;
         gap: 12px;
     }
 
     .stat-card {
-        padding: 16px;
+        padding: 16px 14px;
+        min-height: 140px;
+        border-radius: 18px;
+    }
+
+    .stat-card-header {
+        margin-bottom: 12px;
     }
 
     .stat-value {
         font-size: 18px;
     }
 
-    .finance-summary {
-        grid-template-columns: 1fr;
-        gap: 12px;
+    .dashboard-top-section {
+        margin-top: 18px;
+        margin-bottom: 18px;
     }
 
+    .dashboard-main-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .dashboard-main-grid .card {
+        height: auto;
+        max-height: 360px;
+    }
+
+    /* Cards & content density */
+    .card {
+        border-radius: 18px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+        padding: 14px 16px;
+    }
+
+    .card-body {
+        padding: 14px 16px;
+    }
+
+    /* Page actions & search */
     .page-actions {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+    }
+
+    .page-actions .btn {
+        justify-content: center;
     }
 
     .search-box {
         margin-left: 0;
+        width: 100%;
     }
 
     .search-box input {
         width: 100%;
     }
 
+    /* Tables: better mobile readability while keeping horizontal scroll */
+    .table-responsive {
+        margin: 0 -8px;
+        padding: 0 8px;
+    }
+
+    .data-table thead th {
+        padding: 8px 10px;
+        font-size: 10px;
+    }
+
+    .data-table tbody td {
+        padding: 10px 12px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .data-table tbody tr {
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Finance summary cards stacked */
+    .finance-summary {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* Forms & modals */
     .form-row {
         grid-template-columns: 1fr;
     }
 
     .modal {
         margin: 10px;
+        border-radius: 20px;
     }
 
-    .page-title-area h1 {
-        font-size: 18px;
+    .modal-header {
+        padding: 16px 18px;
+    }
+
+    .modal-body {
+        padding: 16px 18px 18px;
     }
 }
 
 @media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
+    /* Global spacing */
+    .pages-container {
+        padding: 14px 10px 18px;
     }
 
-    .products-grid {
-        grid-template-columns: 1fr;
-    }
-
+    /* Topbar */
     .topbar-right {
         display: none;
+    }
+
+    .page-title-area h1 {
+        font-size: 17px;
+    }
+
+    /* Dashboard stats single column */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 14px 12px;
+        min-height: 130px;
+    }
+
+    .stat-value {
+        font-size: 17px;
+    }
+
+    /* Tables */
+    .data-table tbody td {
+        padding: 9px 10px;
+        font-size: 11px;
+    }
+
+    /* Profile header stack */
+    .profile-header-card {
+        padding: 26px 18px;
+        border-radius: 20px;
+    }
+
+    .profile-main-info h2 {
+        font-size: 1.7rem;
+    }
+
+    .profile-tab-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    /* Modals full‑height feel */
+    .modal {
+        max-height: 88vh;
     }
 }
 
