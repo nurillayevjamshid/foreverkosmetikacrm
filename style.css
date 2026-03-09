@@ -1861,6 +1861,22 @@ html[data-theme="light"] .form-group select option {
     #usersTable tbody td[data-label="Amallar"]::before {
         display: none;
     }
+
+    /* Tertib raqami mobil kartada keraksiz – yashiramiz */
+    #financeTable tbody td[data-label="#"],
+    #productsTable tbody td[data-label="#"],
+    #salesTable tbody td[data-label="#"],
+    #customersTable tbody td[data-label="#"],
+    #usersTable tbody td[data-label="#"] {
+        display: none;
+    }
+
+    /* Amallar tugmalari uchun kattaroq touch-area */
+    .btn-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+    }
 }
 
 /* Mobile overlay */
