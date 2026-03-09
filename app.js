@@ -983,9 +983,19 @@ function renderFinance(searchTerm) {
     empty.style.display = 'none';
     tbody.innerHTML = filtered.map(function (f, i) {
         var isInc = f.type === 'income';
-        return '<tr><td>' + (i + 1) + '</td><td>' + formatDate(f.date) + '</td><td><span class="type-badge ' + f.type + '"><i class="fas fa-' + (isInc ? 'arrow-down' : 'arrow-up') + '"></i> ' + (isInc ? 'Kirim' : 'Chiqim') + '</span></td><td>' + escapeHtml(f.category) + '</td><td>' + escapeHtml(f.description || 'вЂ”') + '</td><td class="' + (isInc ? 'amount-positive' : 'amount-negative') + '">' + (isInc ? '+' : '-') + formatMoney(f.amount) + '</td>' +
-            '<td><button class="btn-icon edit finance-edit-btn" data-id="' + f.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
-            '<button class="btn-icon delete finance-delete-btn" data-id="' + f.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button></td></tr>';
+        return '' +
+            '<tr>' +
+            '<td data-label="#">' + (i + 1) + '</td>' +
+            '<td data-label="Sana">' + formatDate(f.date) + '</td>' +
+            '<td data-label="Turi"><span class="type-badge ' + f.type + '"><i class="fas fa-' + (isInc ? 'arrow-down' : 'arrow-up') + '"></i> ' + (isInc ? 'Kirim' : 'Chiqim') + '</span></td>' +
+            '<td data-label="Kategoriya">' + escapeHtml(f.category) + '</td>' +
+            '<td data-label="Tavsif">' + escapeHtml(f.description || 'вЂ”') + '</td>' +
+            '<td data-label="Summa" class="' + (isInc ? 'amount-positive' : 'amount-negative') + '">' + (isInc ? '+' : '-') + formatMoney(f.amount) + '</td>' +
+            '<td data-label="Amallar">' +
+            '<button class="btn-icon edit finance-edit-btn" data-id="' + f.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
+            '<button class="btn-icon delete finance-delete-btn" data-id="' + f.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button>' +
+            '</td>' +
+            '</tr>';
     }).join('');
 }
 

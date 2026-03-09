@@ -1769,6 +1769,65 @@ html[data-theme="light"] .form-group select option {
     }
 }
 
+/* Finance table – mobile card view
+   Faqat Kirim/Chiqim jadvali uchun (id = financeTable) */
+@media (max-width: 768px) {
+    #financeTable {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    #financeTable thead {
+        display: none;
+    }
+
+    #financeTable tbody tr {
+        display: block;
+        margin-bottom: 12px;
+        border-radius: 14px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.03);
+        box-shadow: var(--shadow-md);
+    }
+
+    html[data-theme="light"] #financeTable tbody tr {
+        background: #ffffff;
+    }
+
+    #financeTable tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 14px;
+        border: none;
+        border-bottom: 1px solid var(--border);
+        white-space: normal;
+    }
+
+    #financeTable tbody td:last-child {
+        border-bottom: none;
+    }
+
+    #financeTable tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+
+    #financeTable tbody td[data-label="Amallar"] {
+        justify-content: flex-end;
+        gap: 6px;
+    }
+
+    #financeTable tbody td[data-label="Amallar"]::before {
+        display: none;
+    }
+}
+
 /* Mobile overlay */
 .sidebar-overlay {
     display: none;
