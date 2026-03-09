@@ -602,6 +602,39 @@
 
                     <!-- Tab 4: Settings -->
                     <div class="tab-content" id="tab-settings">
+                        <div class="card" style="max-width: 500px; margin-bottom: 20px;" id="profilePermissionsCard">
+                            <div class="card-header">
+                                <h2><i class="fas fa-user-lock"></i> Bo'limlarga kirish huquqlari</h2>
+                            </div>
+                            <div class="card-body">
+                                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 15px;">
+                                    Ushbu xodim uchun tizimdagi bo'limlarni yoqish yoki o'chirish.</p>
+                                <div class="permissions-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
+                                        <input type="checkbox" id="profile_perm_sales"> <span>Sotuvlar</span>
+                                    </label>
+                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
+                                        <input type="checkbox" id="profile_perm_customers"> <span>Mijozlar</span>
+                                    </label>
+                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
+                                        <input type="checkbox" id="profile_perm_finance"> <span>Kirim/Chiqim</span>
+                                    </label>
+                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
+                                        <input type="checkbox" id="profile_perm_products"> <span>Mahsulotlar</span>
+                                    </label>
+                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
+                                        <input type="checkbox" id="profile_perm_staff"> <span>Xodimlar</span>
+                                    </label>
+                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
+                                        <input type="checkbox" id="profile_perm_settings"> <span>Sozlamalar</span>
+                                    </label>
+                                </div>
+                                <button id="saveProfilePermissionsBtn" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                                    <i class="fas fa-save"></i> O'zgarishlarni saqlash
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="card" style="max-width: 500px;">
                             <div class="card-header">
                                 <h2><i class="fas fa-shield-alt"></i> Xavfsizlik va chiqish</h2>

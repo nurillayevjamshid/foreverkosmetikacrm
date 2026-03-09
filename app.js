@@ -226,22 +226,61 @@ function loadUserProfile() {
     document.getElementById('profileRoleText').innerHTML = '<i class="fas fa-shield-halved"></i> ' + role;
 
     // Load performance stats
-    var userSales = salesArr.filter(function (s) {
-        // Here we assume sales don't have owner ID yet, or if they do we filter.
-        // For now let's just show total or leave at 0 if no clear link.
-        // If we want to be smart, we can filter by the name if it matches? 
-        // But usually it's better to just show 0 or global for now if not implemented.
-        return false;
-    });
+    var userSales = salesArr.filter(function (s) { return false; });
 
-    // We can also use usersArr to find current user name
+    // Ruxsatnomalarni yuklash
     db.collection('users').doc(user.uid).get().then(function (doc) {
         if (doc.exists) {
             var data = doc.data();
             if (data.name) document.getElementById('profileName').textContent = data.name;
+            
+            // Faqat adminlar ruxsatnomalarni ko'ra oladi va o'zgartira oladi
+            var isAdmin = (currentUserRole === 'admin');
+            var card = document.getElementById('profilePermissionsCard');
+            if (card) card.style.display = isAdmin ? 'block' : 'none';
+
+            if (data.permissions) {
+                var p = data.permissions;
+                document.getElementById('profile_perm_sales').checked = p.sales !== false;
+                document.getElementById('profile_perm_customers').checked = p.customers !== false;
+                document.getElementById('profile_perm_finance').checked = p.finance !== false;
+                document.getElementById('profile_perm_products').checked = p.products !== false;
+                document.getElementById('profile_perm_staff').checked = !!p.staff;
+                document.getElementById('profile_perm_settings').checked = !!p.settings;
+            }
         }
     });
 }
+
+// Ruxsatnomalarni saqlash
+document.getElementById('saveProfilePermissionsBtn').addEventListener('click', function() {
+    var user = auth.currentUser;
+    if (!user) return;
+
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saqlanmoqda...';
+
+    var perms = {
+        sales: document.getElementById('profile_perm_sales').checked,
+        customers: document.getElementById('profile_perm_customers').checked,
+        finance: document.getElementById('profile_perm_finance').checked,
+        products: document.getElementById('profile_perm_products').checked,
+        staff: document.getElementById('profile_perm_staff').checked,
+        settings: document.getElementById('profile_perm_settings').checked
+    };
+
+    db.collection('users').doc(user.uid).update({ permissions: perms }).then(function() {
+        showToast("Ruxsatnomalar muvaffaqiyatli yangilandi!");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> O\'zgarishlarni saqlash';
+        updateUIVisibility(); // UI-ni darhol yangilash
+    }).catch(function(err) {
+        showToast("Xatolik: " + err.message, "error");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> O\'zgarishlarni saqlash';
+    });
+});
 
 document.getElementById('logoutBtnProfile').addEventListener('click', function () {
     auth.signOut().then(function () { window.location.href = 'login.html'; });
