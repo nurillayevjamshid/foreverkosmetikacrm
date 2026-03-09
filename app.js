@@ -157,11 +157,46 @@ function navigateTo(pageName) {
 }
 
 function updateUIVisibility(currentPage) {
-    // Xodimlar bo'limi doimiy ravishda ko'rinib turishi kerak
-    var staffNavItem = document.querySelector('.nav-item[data-page="staff"]');
-    if (staffNavItem) {
-        staffNavItem.style.display = 'block';
-    }
+    // Hozirgi foydalanuvchi ma'lumotlarini olish
+    var user = firebase.auth().currentUser;
+    if (!user) return;
+
+    db.collection('users').doc(user.uid).get().then(function (doc) {
+        var perms = { sales: true, customers: true, finance: true, products: true, staff: false, settings: false };
+        var isAdmin = false;
+
+        if (doc.exists) {
+            var data = doc.data();
+            isAdmin = (data.role === 'admin');
+            if (data.permissions) perms = data.permissions;
+        }
+
+        // Sidebar menyularini boshqarish
+        document.querySelectorAll('.nav-item').forEach(function (item) {
+            var page = item.dataset.page;
+            if (isAdmin) {
+                item.style.display = 'block';
+            } else {
+                // Admin bo'lmaganlar uchun ruxsatnomalarni tekshirish
+                if (perms[page] === false) {
+                    item.style.display = 'none';
+                    // Agar hozirgi sahifa yashirilgan bo'lsa, dashboardga yo'naltirish
+                    if (currentPage === page) navigateTo('dashboard');
+                } else {
+                    item.style.display = 'block';
+                }
+            }
+        });
+
+        // Amallar tugmalarini boshqarish (faqat admin uchun)
+        document.querySelectorAll('.btn-icon.delete, .btn-icon.edit.user-edit-btn, #addUserBtn').forEach(function (btn) {
+            btn.style.display = isAdmin ? 'inline-flex' : 'none';
+        });
+
+    }).catch(function (error) {
+        console.error("UI visibility error:", error);
+    });
+
     initSelectPicker('customerRegionPicker', allRegions);
 }
 
@@ -191,22 +226,61 @@ function loadUserProfile() {
     document.getElementById('profileRoleText').innerHTML = '<i class="fas fa-shield-halved"></i> ' + role;
 
     // Load performance stats
-    var userSales = salesArr.filter(function (s) {
-        // Here we assume sales don't have owner ID yet, or if they do we filter.
-        // For now let's just show total or leave at 0 if no clear link.
-        // If we want to be smart, we can filter by the name if it matches? 
-        // But usually it's better to just show 0 or global for now if not implemented.
-        return false;
-    });
+    var userSales = salesArr.filter(function (s) { return false; });
 
-    // We can also use usersArr to find current user name
+    // Ruxsatnomalarni yuklash
     db.collection('users').doc(user.uid).get().then(function (doc) {
         if (doc.exists) {
             var data = doc.data();
             if (data.name) document.getElementById('profileName').textContent = data.name;
+            
+            // Faqat adminlar ruxsatnomalarni ko'ra oladi va o'zgartira oladi
+            var isAdmin = (currentUserRole === 'admin');
+            var card = document.getElementById('profilePermissionsCard');
+            if (card) card.style.display = isAdmin ? 'block' : 'none';
+
+            if (data.permissions) {
+                var p = data.permissions;
+                document.getElementById('profile_perm_sales').checked = p.sales !== false;
+                document.getElementById('profile_perm_customers').checked = p.customers !== false;
+                document.getElementById('profile_perm_finance').checked = p.finance !== false;
+                document.getElementById('profile_perm_products').checked = p.products !== false;
+                document.getElementById('profile_perm_staff').checked = !!p.staff;
+                document.getElementById('profile_perm_settings').checked = !!p.settings;
+            }
         }
     });
 }
+
+// Ruxsatnomalarni saqlash
+document.getElementById('saveProfilePermissionsBtn').addEventListener('click', function() {
+    var user = auth.currentUser;
+    if (!user) return;
+
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saqlanmoqda...';
+
+    var perms = {
+        sales: document.getElementById('profile_perm_sales').checked,
+        customers: document.getElementById('profile_perm_customers').checked,
+        finance: document.getElementById('profile_perm_finance').checked,
+        products: document.getElementById('profile_perm_products').checked,
+        staff: document.getElementById('profile_perm_staff').checked,
+        settings: document.getElementById('profile_perm_settings').checked
+    };
+
+    db.collection('users').doc(user.uid).update({ permissions: perms }).then(function() {
+        showToast("Ruxsatnomalar muvaffaqiyatli yangilandi!");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> O\'zgarishlarni saqlash';
+        updateUIVisibility(); // UI-ni darhol yangilash
+    }).catch(function(err) {
+        showToast("Xatolik: " + err.message, "error");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> O\'zgarishlarni saqlash';
+    });
+});
 
 document.getElementById('logoutBtnProfile').addEventListener('click', function () {
     auth.signOut().then(function () { window.location.href = 'login.html'; });
@@ -1256,10 +1330,20 @@ function editUser(id) {
     var roleVal = u.role || 'manager';
     var roleLab = roleVal === 'admin' ? 'Admin (To\'liq huquq)' : 'Manager (Cheklangan)';
     setSelectValue('newUserRolePicker', roleVal, roleLab);
+    
+    // Ruxsatnomalarni to'ldirish
+    var perms = u.permissions || { sales: true, customers: true, finance: true, products: true, staff: false, settings: false };
+    document.getElementById('perm_sales').checked = perms.sales !== false;
+    document.getElementById('perm_customers').checked = perms.customers !== false;
+    document.getElementById('perm_finance').checked = perms.finance !== false;
+    document.getElementById('perm_products').checked = perms.products !== false;
+    document.getElementById('perm_staff').checked = !!perms.staff;
+    document.getElementById('perm_settings').checked = !!perms.settings;
+
     document.getElementById('newUserEmail').disabled = true;
     document.getElementById('newUserPassword').required = false;
     document.getElementById('newUserPassword').placeholder = "O'zgartirish uchun yangi parol kiriting (ixtiyoriy)";
-    document.getElementById('passGroup').style.display = 'block'; // Tahrirlashda ham parolni ko'rish/o'zgartirish mumkin
+    document.getElementById('passGroup').style.display = 'block';
     document.getElementById('userModalTitle').innerHTML = '<i class="fas fa-user-edit"></i> Xodimni tahrirlash';
     openModal('userModal');
 }
@@ -1275,12 +1359,21 @@ document.getElementById('userForm').addEventListener('submit', function (e) {
     btn.disabled = true;
     btn.textContent = 'Saqlanmoqda...';
 
+    var permissions = {
+        sales: document.getElementById('perm_sales').checked,
+        customers: document.getElementById('perm_customers').checked,
+        finance: document.getElementById('perm_finance').checked,
+        products: document.getElementById('perm_products').checked,
+        staff: document.getElementById('perm_staff').checked,
+        settings: document.getElementById('perm_settings').checked
+    };
+
     if (id) {
         var updateData = {
             name: name,
-            role: document.getElementById('newUserRole').value
+            role: document.getElementById('newUserRole').value,
+            permissions: permissions
         };
-        // Agar parol kiritilgan bo'lsa, uni ham bazada yangilaymiz
         if (password) {
             updateData.password = password;
         }
@@ -1305,12 +1398,12 @@ document.getElementById('userForm').addEventListener('submit', function (e) {
         var secondaryAuth = secondaryApp.auth();
 
         secondaryAuth.createUserWithEmailAndPassword(email, password).then(function (cred) {
-            // Firestore-ga barcha ma'lumotlarni, jumladan parolni ham saqlaymiz
             return db.collection("users").doc(cred.user.uid).set({
                 name: name,
                 email: email,
                 role: document.getElementById('newUserRole').value,
-                password: password, // Asosiy admin ko'rishi uchun
+                permissions: permissions,
+                password: password,
                 createdAt: new Date().toISOString()
             });
         }).then(function () {

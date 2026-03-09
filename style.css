@@ -3473,4 +3473,204 @@ html[data-theme="light"] .profile-tab-btn.active {
         opacity: 1;
         transform: translateY(0);
     }
+
+   /* ============================
+   MOBILE LAYOUT FOR CRM
+   ============================ */
+
+/* Katta ekranlarda hamma narsa eski holida qoladi, faqat pastdagilar kichik ekranlar uchun */
+@media (max-width: 1024px) {
+  /* Agar chapdagi sidebar bo‘lsa – ustiga chiqarib yuboramiz */
+  .crm-layout,
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+  }
+
+  .sidebar,
+  .crm-sidebar,
+  .nav-left {
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.5rem 0;
+  }
+
+  .sidebar-nav,
+  .crm-menu {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    padding: 0 1rem 0.75rem 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sidebar-link,
+  .crm-menu a {
+    white-space: nowrap;
+    padding: 0.6rem 1rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+  }
+
+  .main,
+  .crm-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Header ixchamlashadi */
+  header,
+  .crm-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.6rem 1rem;
+  }
+
+  .header-inner,
+  .crm-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  /* Katta jadval o‘rniga kartochkalar – telefon uchun oson o‘qiladi */
+  table.crm-table,
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    display: none; /* sarlavhani yashiramiz */
+  }
+
+  tbody tr {
+    display: block;
+    background: #ffffff;
+    border-radius: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  }
+
+  tbody tr td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+    border-bottom: none;
+    font-size: 0.9rem;
+  }
+
+  tbody tr td::before {
+    content: attr(data-label);
+    /* har bir kolonka nomi uchun: <td data-label="Mahsulot">... */
+    font-weight: 600;
+    color: #6b7280;
+    margin-right: 0.75rem;
+    flex: 0 0 40%;
+    text-align: left;
+  }
+
+  /* Action tugmalarini katta qilib, yonma-yon chiqaramiz */
+  .actions,
+  .row-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .btn,
+  .btn-sm {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
+    border-radius: 999px;
+  }
+
+  /* Formalar – bitta ustun, to‘liq kenglik */
+  .form-row {
+    display: block;
+  }
+
+  .form-group {
+    width: 100%;
+    margin-bottom: 0.9rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.85rem 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  .form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  /* Kichik statistik kartochkalar */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .stat-card {
+    padding: 0.9rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  .crm-content,
+  .main {
+    padding: 0.75rem 0.75rem 1rem 0.75rem;
+  }
+
+  h1,
+  .page-title {
+    font-size: 1.4rem;
+  }
+
+  .card,
+  .panel {
+    border-radius: 0.9rem;
+    padding: 0.9rem;
+  }
+
+  .btn,
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* Agar login sahifasi bo‘lsa */
+  .login-wrapper,
+  .login-card {
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem;
+    border-radius: 1rem;
+  }
+}
 }
