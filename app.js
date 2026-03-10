@@ -1356,12 +1356,11 @@ function refreshDashboard() {
                     '<div class="expense-value-wrap">' +
                     '<span class="expense-value">-' + formatMoney(f.amount) + '</span>' +
                     '</div>' +
-                    '</div>';            }).join('');
-            updateUIVisibility('sales');
+                    '</div>';
+            }).join('');
         }
-    });
+    }
 }
-
 // ==========================================
 // === SETTINGS: THEME MODE ===
 // ==========================================
@@ -2038,6 +2037,11 @@ document.addEventListener('click', function (e) {
         });
     }
 });
+
+
+
+
+
 
 
 
