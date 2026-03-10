@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Forever Kosmetika mahsulotlar katalogi - CRM bilan jonli sinxron">
+  <title>Forever Kosmetika | Mahsulotlar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="catalog.css">
+</head>
+<body>
+  <div class="ambient"></div>
+
+  <header class="hero">
+    <div class="brand">Forever Kosmetika</div>
+    <h1>Mahsulotlar katalogi</h1>
+    <p class="subtitle">CRMda qo'shilgan mahsulotlar shu yerda avtomatik yangilanadi.</p>
+
+    <div class="controls">
+      <label class="control">
+        <span>Qidiruv</span>
+        <input id="searchInput" type="search" placeholder="Masalan: Face cream">
+      </label>
+      <label class="control">
+        <span>Kategoriya</span>
+        <select id="categorySelect">
+          <option value="all">Barcha</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="meta">
+      <span id="resultsCount">0 ta mahsulot</span>
+      <span id="lastUpdated">Yangilanmoqda...</span>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="grid" id="productsGrid" aria-live="polite"></section>
+
+    <div class="state empty" id="emptyState">
+      <h2>Mahsulot topilmadi</h2>
+      <p>CRMda mahsulot qo'shing yoki filtrlarni tozalang.</p>
+    </div>
+
+    <div class="state error" id="errorState">
+      <h2>Ma'lumotni yuklab bo'lmadi</h2>
+      <p id="errorMessage">Noma'lum xatolik.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>Forever Kosmetika</span>
+    <span>CRM bilan sinxron katalog</span>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCcXc0svgxLtPvOYwpNUIzyRJGgajbyR9M",
+      authDomain: "foreverkosmetika.firebaseapp.com",
+      projectId: "foreverkosmetika",
+      storageBucket: "foreverkosmetika.appspot.com",
+      messagingSenderId: "1013746676566",
+      appId: "1:1013746676566:web:0032dfcb13239db2d15cf7",
+      measurementId: "G-B71E70JH2Z"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  <script src="catalog.js"></script>
+</body>
+</html>
