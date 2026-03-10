@@ -188,10 +188,46 @@ function updateUIVisibility(currentPage) {
             }
         });
 
-        // Amallar tugmalarini boshqarish (faqat admin uchun)
-        document.querySelectorAll('.btn-icon.delete, .btn-icon.edit.user-edit-btn, #addUserBtn').forEach(function (btn) {
-            btn.style.display = isAdmin ? 'inline-flex' : 'none';
-        });
+        // Batafsil amallar ruxsatnomalarini boshqarish
+        if (isAdmin) {
+            document.querySelectorAll('.btn-icon.delete, .btn-icon.edit, #addUserBtn, #addFinanceBtn, .amount-box').forEach(function (el) {
+                el.style.display = '';
+            });
+        } else {
+            // Sotuvlarni tahrirlash/o'chirish
+            document.querySelectorAll('.sale-edit-btn, .sale-delete-btn').forEach(function (btn) {
+                btn.style.display = perms.editSale !== false ? 'inline-flex' : 'none';
+            });
+
+            // Mijozlarni o'chirish
+            document.querySelectorAll('.customer-delete-btn').forEach(function (btn) {
+                btn.style.display = perms.deleteCustomer !== false ? 'inline-flex' : 'none';
+            });
+
+            // Chiqim qo'shish (Moliya bo'limida)
+            var addFinanceBtn = document.getElementById('addFinanceBtn');
+            if (addFinanceBtn) {
+                addFinanceBtn.style.display = perms.addExpense !== false ? 'inline-flex' : 'none';
+            }
+
+            // Sof foyda va moliyani ko'rish (Dashboard)
+            var profitBoxes = document.querySelectorAll('.amount-box');
+            profitBoxes.forEach(function (box) {
+                if (perms.showProfit === false) {
+                    box.style.filter = 'blur(5px)';
+                    box.style.pointerEvents = 'none';
+                    box.title = 'Ruxsat berilmagan';
+                } else {
+                    box.style.filter = '';
+                    box.style.pointerEvents = '';
+                }
+            });
+
+            // Xodimlar va Sozlamalar bo'limidagi amallar
+            document.querySelectorAll('.user-edit-btn, .user-delete-btn, #addUserBtn').forEach(function (btn) {
+                btn.style.display = 'none'; // Managerlar xodimlarni o'zgartira olmaydi
+            });
+        }
 
     }).catch(function (error) {
         console.error("UI visibility error:", error);
@@ -247,6 +283,12 @@ function loadUserProfile() {
                 document.getElementById('profile_perm_products').checked = p.products !== false;
                 document.getElementById('profile_perm_staff').checked = !!p.staff;
                 document.getElementById('profile_perm_settings').checked = !!p.settings;
+                
+                // Detallar
+                document.getElementById('profile_perm_show_profit').checked = p.showProfit !== false;
+                document.getElementById('profile_perm_add_expense').checked = p.addExpense !== false;
+                document.getElementById('profile_perm_edit_sale').checked = p.editSale !== false;
+                document.getElementById('profile_perm_delete_customer').checked = p.deleteCustomer !== false;
             }
         }
     });
@@ -267,7 +309,12 @@ document.getElementById('saveProfilePermissionsBtn').addEventListener('click', f
         finance: document.getElementById('profile_perm_finance').checked,
         products: document.getElementById('profile_perm_products').checked,
         staff: document.getElementById('profile_perm_staff').checked,
-        settings: document.getElementById('profile_perm_settings').checked
+        settings: document.getElementById('profile_perm_settings').checked,
+        // Detallar
+        showProfit: document.getElementById('profile_perm_show_profit').checked,
+        addExpense: document.getElementById('profile_perm_add_expense').checked,
+        editSale: document.getElementById('profile_perm_edit_sale').checked,
+        deleteCustomer: document.getElementById('profile_perm_delete_customer').checked
     };
 
     db.collection('users').doc(user.uid).update({ permissions: perms }).then(function() {
@@ -834,6 +881,7 @@ function renderSales(searchTerm) {
             '<button class="btn-icon delete sale-delete-btn" data-id="' + s.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button></div></td>' +
             '</tr>';
     }).join('');
+    updateUIVisibility('sales');
 }
 
 // Global viewer logic
@@ -1303,12 +1351,11 @@ function refreshDashboard() {
                     '<div class="expense-value-wrap">' +
                     '<span class="expense-value">-' + formatMoney(f.amount) + '</span>' +
                     '</div>' +
-                    '</div>';
-            }).join('');
+                    '</div>';            }).join('');
+            updateUIVisibility('sales');
         }
-    }
+    });
 }
-
 
 // ==========================================
 // === SETTINGS: THEME MODE ===
@@ -1839,6 +1886,7 @@ function renderCustomers(searchQuery) {
                     '</td>' +
                     '</tr>';
             }).join('');
+            updateUIVisibility('customers');
         }
     });
 }

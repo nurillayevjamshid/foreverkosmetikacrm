@@ -628,25 +628,50 @@
                             <div class="card-body">
                                 <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 15px;">
                                     Ushbu xodim uchun tizimdagi bo'limlarni yoqish yoki o'chirish.</p>
-                                <div class="permissions-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                                        <input type="checkbox" id="profile_perm_sales"> <span>Sotuvlar</span>
-                                    </label>
-                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                                        <input type="checkbox" id="profile_perm_customers"> <span>Mijozlar</span>
-                                    </label>
-                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                                        <input type="checkbox" id="profile_perm_finance"> <span>Kirim/Chiqim</span>
-                                    </label>
-                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                                        <input type="checkbox" id="profile_perm_products"> <span>Mahsulotlar</span>
-                                    </label>
-                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                                        <input type="checkbox" id="profile_perm_staff"> <span>Xodimlar</span>
-                                    </label>
-                                    <label class="perm-item" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
-                                        <input type="checkbox" id="profile_perm_settings"> <span>Sozlamalar</span>
-                                    </label>
+                                <div class="permissions-container" style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px;">
+                                    <!-- Bo'limlar Ruxsati -->
+                                    <div class="perm-group">
+                                        <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; display: block; text-transform: uppercase; letter-spacing: 0.5px;">Asosiy bo'limlar</label>
+                                        <div class="permissions-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_sales"> <span>Sotuvlar</span>
+                                            </label>
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_customers"> <span>Mijozlar</span>
+                                            </label>
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_finance"> <span>Kirim/Chiqim</span>
+                                            </label>
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_products"> <span>Mahsulotlar</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Amallar va Detallar Ruxsati -->
+                                    <div class="perm-group">
+                                        <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; display: block; text-transform: uppercase; letter-spacing: 0.5px;">Amallar va Detallar</label>
+                                        <div class="permissions-grid" style="display: grid; grid-template-columns: 1fr; gap: 8px;">
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_show_profit"> <span>Sof foyda va moliyani ko'rish</span>
+                                            </label>
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_add_expense"> <span>Chiqim qo'shish huquqi</span>
+                                            </label>
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_edit_sale"> <span>Sotuvlarni tahrirlash/o'chirish</span>
+                                            </label>
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_delete_customer"> <span>Mijozlarni o'chirish huquqi</span>
+                                            </label>
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_staff"> <span>Xodimlar bo'limi (Admin)</span>
+                                            </label>
+                                            <label class="perm-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">
+                                                <input type="checkbox" id="profile_perm_settings"> <span>Sozlamalar bo'limi</span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <button id="saveProfilePermissionsBtn" class="btn btn-primary" style="width: 100%; justify-content: center;">
                                     <i class="fas fa-save"></i> O'zgarishlarni saqlash
