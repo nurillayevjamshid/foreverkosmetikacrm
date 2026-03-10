@@ -236,11 +236,16 @@ function updateUIVisibility(currentPage) {
     initSelectPicker('customerRegionPicker', allRegions);
 }
 
-document.querySelectorAll('.nav-item').forEach(function (item) {
-    item.addEventListener('click', function (e) {
-        e.preventDefault();
-        navigateTo(item.dataset.page);
-    });
+// Sidebar navigation (event delegation for more reliable clicks)
+document.addEventListener('click', function (e) {
+    var navLink = e.target.closest('.nav-link');
+    if (!navLink) return;
+    var navItem = navLink.closest('.nav-item');
+    if (!navItem) return;
+    var page = navItem.dataset.page;
+    if (!page) return;
+    e.preventDefault();
+    navigateTo(page);
 });
 
 document.getElementById('nav-profile').addEventListener('click', function (e) {
@@ -2033,3 +2038,8 @@ document.addEventListener('click', function (e) {
         });
     }
 });
+
+
+
+
+
