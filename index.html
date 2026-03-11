@@ -181,9 +181,10 @@
                     </div>
                 </div>
 
-                <!-- Top Section: Full Width Expenses -->
-                <div class="dashboard-top-section">
-                    <div class="card expense-card full-width-card">
+                <!-- Top Section: Split Layout (Expenses & Cost Prices) -->
+                <div class="dashboard-top-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                    <!-- Column 1: Xarajatlar -->
+                    <div class="card expense-card">
                         <div class="card-header">
                             <h2><i class="fas fa-wallet"></i> Xarajatlar bo'limi</h2>
                             <div class="header-actions">
@@ -192,13 +193,29 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
                             <div class="expense-feed-container" id="dashExpenseList">
                                 <!-- Dynamic Expense Items will be injected here -->
                             </div>
                             <div class="empty-state" id="dashEmptyExpense" style="display:none;">
                                 <i class="fas fa-receipt"></i>
                                 <p>Hali xarajatlar mavjud emas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Tannarxlar ro'yxati -->
+                    <div class="card cost-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-tags"></i> Tannarxlar ro'yxati</h2>
+                        </div>
+                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                            <div class="expense-feed-container" id="dashCostList">
+                                <!-- Dynamic Cost Items will be injected here -->
+                            </div>
+                            <div class="empty-state" id="dashEmptyCost" style="display:block;">
+                                <i class="fas fa-calculator"></i>
+                                <p>Hali tannarx ma'lumotlari yo'q</p>
                             </div>
                         </div>
                     </div>
@@ -256,6 +273,9 @@
                                         <th>Viloyat</th>
                                         <th>Mahsulotlar</th>
                                         <th>Jami summa</th>
+                                        <th>Tannarx</th>
+                                        <th>Dostavka</th>
+                                        <th>Status</th>
                                         <th>Amallar</th>
                                     </tr>
                                 </thead>
@@ -722,17 +742,23 @@
                     <label for="saleName"><i class="fas fa-tag"></i> Nomi (eslatma)</label>
                     <input type="text" id="saleName" placeholder="Masalan: Abdulloh - Krem" required>
                 </div>
-                <div class="form-group">
-                    <label for="saleRegion"><i class="fas fa-map-marker-alt"></i> Viloyat</label>
-                    <div class="select-picker" id="saleRegionPicker">
-                        <input type="hidden" id="saleRegion" required>
-                        <button type="button" class="select-trigger">
-                            <span class="select-trigger-label">Tanlang...</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <div class="select-dropdown">
-                            <!-- Dynamic -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="saleRegion"><i class="fas fa-map-marker-alt"></i> Viloyat</label>
+                        <div class="select-picker" id="saleRegionPicker">
+                            <input type="hidden" id="saleRegion" required>
+                            <button type="button" class="select-trigger">
+                                <span class="select-trigger-label">Tanlang...</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="select-dropdown">
+                                <!-- Dynamic -->
+                            </div>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="saleDelivery"><i class="fas fa-truck"></i> Dostavka (so'm)</label>
+                        <input type="number" id="saleDelivery" placeholder="0 (tekin bo'lsa)" min="0" step="500">
                     </div>
                 </div>
                 <div class="form-group"

@@ -874,6 +874,24 @@ function renderSales(searchTerm) {
             return (p ? p.name : '—') + ' (x' + it.quantity + ')';
         }).join(', ');
 
+        var totalCost = (s.items || []).reduce(function(sum, it) {
+            var p = productsArr.find(function(px) { return px.id === it.productId; });
+            return sum + ((p ? p.costPrice || 0 : 0) * it.quantity);
+        }, 0);
+
+        var deliveryVal = s.deliveryAmount || 0;
+        var deliveryHtml = deliveryVal > 0 ? formatMoney(deliveryVal) : '<span class="status-badge active" style="background:var(--success-glow); color:var(--success);">Tekin</span>';
+
+        var status = s.status || 'kutilmoqda';
+        var statusClass = status === 'sotildi' ? 'active' : (status === 'atkaz' ? 'danger' : 'warning');
+        var statusLabel = status === 'sotildi' ? 'Sotildi' : (status === 'atkaz' ? 'Atkaz' : 'Kutilmoqda');
+
+        var statusSelect = '<select class="status-select-inline" data-id="' + s.id + '" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-secondary); font-size: 0.8rem; cursor: pointer;">' +
+            '<option value="kutilmoqda" ' + (status === 'kutilmoqda' ? 'selected' : '') + '>Kutilmoqda</option>' +
+            '<option value="sotildi" ' + (status === 'sotildi' ? 'selected' : '') + '>Sotildi</option>' +
+            '<option value="atkaz" ' + (status === 'atkaz' ? 'selected' : '') + '>Atkaz</option>' +
+            '</select>';
+
         return '' +
             '<tr class="sale-data-row">' +
             '<td data-label="#">' + (i + 1) + '</td>' +
@@ -882,6 +900,9 @@ function renderSales(searchTerm) {
             '<td data-label="Viloyat"><div class="sale-region-badge"><i class="fas fa-location-dot"></i> ' + escapeHtml(s.region || '—') + '</div></td>' +
             '<td data-label="Mahsulotlar" title="' + fullItemsText + '"><div class="sale-items-wrap">' + itemsHtml + '</div></td>' +
             '<td data-label="Jami summa" class="amount-highlight">' + formatMoney(s.totalAmount) + '</td>' +
+            '<td data-label="Tannarx">' + formatMoney(totalCost) + '</td>' +
+            '<td data-label="Dostavka">' + deliveryHtml + '</td>' +
+            '<td data-label="Status">' + statusSelect + '</td>' +
             '<td data-label="Amallar"><div class="sale-actions-wrap"><button class="btn-icon edit sale-edit-btn" data-id="' + s.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
             '<button class="btn-icon delete sale-delete-btn" data-id="' + s.id + '" title="O\'chirish"><i class="fas fa-trash"></i></button></div></td>' +
             '</tr>';
@@ -925,6 +946,7 @@ function editSale(id) {
     document.getElementById('saleId').value = s.id;
     document.getElementById('saleDate').value = s.date;
     document.getElementById('saleName').value = s.name || '';
+    document.getElementById('saleDelivery').value = s.deliveryAmount || 0;
     initSelectPicker('saleRegionPicker', allRegions);
     setSelectValue('saleRegionPicker', s.region || '', s.region || 'Tanlang...');
     document.getElementById('saleNote').value = s.note || '';
@@ -980,12 +1002,15 @@ document.getElementById('saleForm').addEventListener('submit', function (e) {
 
     if (items.length === 0) { showToast('Kamida bitta mahsulot tanlang!', 'error'); return; }
 
+    var deliveryAmount = parseFloat(document.getElementById('saleDelivery').value) || 0;
     var data = {
         date: document.getElementById('saleDate').value,
         name: document.getElementById('saleName').value.trim(),
         region: document.getElementById('saleRegion').value,
         items: items,
         totalAmount: totalAmount,
+        deliveryAmount: deliveryAmount,
+        status: 'kutilmoqda',
         note: document.getElementById('saleNote').value.trim(),
         updatedAt: new Date().toISOString()
     };
@@ -995,27 +1020,8 @@ document.getElementById('saleForm').addEventListener('submit', function (e) {
     } else {
         data.createdAt = new Date().toISOString();
         db.collection("sales").add(data).then(function (docRef) {
-            // Auto add income to finance
-            var desc = (data.name || '') + ': ';
-            desc += items.map(function (it) {
-                var p = productsArr.find(function (px) { return px.id === it.productId; });
-                return (p ? p.name : 'Mahs') + ' (x' + it.quantity + ')';
-            }).join(', ');
-
-            db.collection("finances").add({
-                date: data.date,
-                type: 'income',
-                category: 'Sotuv daromadi',
-                description: desc,
-                amount: totalAmount,
-                saleId: docRef.id,
-                createdAt: new Date().toISOString()
-            });
-
-            showToast("Yangi sotuv qo'shildi!");
+            showToast("Yangi sotuv qo'shildi (Kutilmoqda statusida)!");
             closeModal('saleModal');
-            // Update customer stats if applicable
-            updateCustomerStats(data.name, totalAmount);
         }).catch(function (err) { showToast('Xatolik: ' + err.message, 'error'); });
     }
 });
@@ -1169,6 +1175,54 @@ function deleteProductWithImage(id, name, storagePath) {
 }
 
 // Delegatsiya qilingan click handlerlar (inline onclick o'rniga)
+document.addEventListener('change', function (e) {
+    if (e.target.classList.contains('status-select-inline')) {
+        var sid = e.target.dataset.id;
+        var newStatus = e.target.value;
+        var sale = salesArr.find(function (x) { return x.id === sid; });
+        if (!sale) return;
+
+        // Agar status "sotildi" bo'lsa moliya amallarini bajarish
+        if (newStatus === 'sotildi' && sale.status !== 'sotildi') {
+            // 1. Daromad qo'shish
+            db.collection("finances").add({
+                date: getTodayStr(),
+                type: 'income',
+                category: 'Sotuv daromadi',
+                description: 'Sotuv: ' + (sale.name || 'Noma\'lum'),
+                amount: sale.totalAmount,
+                saleId: sid,
+                createdAt: new Date().toISOString()
+            });
+
+            // 2. Agar dostavka bo'lsa xarajatga qo'shish
+            if (sale.deliveryAmount > 0) {
+                var isViloyat = sale.region && !sale.region.toLowerCase().includes('toshkent');
+                db.collection("finances").add({
+                    date: getTodayStr(),
+                    type: 'expense',
+                    category: isViloyat ? 'Pochta' : 'Yandex',
+                    description: (isViloyat ? 'Viloyatga dostavka' : 'Shaharga dostavka') + ' (Mijoz tomonidan to\'landi)',
+                    amount: sale.deliveryAmount,
+                    saleId: sid,
+                    isDeliveryExpense: true,
+                    createdAt: new Date().toISOString()
+                });
+            }
+            
+            // 3. Mijoz statistikasini yangilash
+            updateCustomerStats(sale.name, sale.totalAmount);
+            showToast('Sotuv muvaffaqiyatli yakunlandi!', 'success');
+        }
+
+        db.collection("sales").doc(sid).update({ status: newStatus })
+            .then(function () { 
+                if (newStatus !== 'sotildi') showToast('Status yangilandi'); 
+            })
+            .catch(function (err) { showToast('Xatolik: ' + err.message, 'error'); });
+    }
+});
+
 document.addEventListener('click', function (e) {
     var btn;
 
@@ -1247,9 +1301,55 @@ function refreshDashboard() {
     var inc = financesArr.filter(function (f) { return f.type === 'income'; }).reduce(function (s, f) { return s + f.amount; }, 0);
     var exp = financesArr.filter(function (f) { return f.type === 'expense'; }).reduce(function (s, f) { return s + f.amount; }, 0);
 
+    // Sotilgan sotuvlarning tannarxini hisoblash
+    var soldSales = salesArr.filter(function(s) { return s.status === 'sotildi'; });
+    var totalCostPrice = soldSales.reduce(function(sum, s) {
+        var sCost = (s.items || []).reduce(function(isum, it) {
+            var p = productsArr.find(function(px) { return px.id === it.productId; });
+            return isum + ((p ? p.costPrice || 0 : 0) * it.quantity);
+        }, 0);
+        return sum + sCost;
+    }, 0);
+
+    // Dostavka summasi (agar mijoz to'lagan bo'lsa xarajatda bor, lekin sof foydaga kirmasligi kerak)
+    var deliveryIncome = financesArr.filter(function(f) { return f.isDeliveryExpense === true; }).reduce(function(s, f) { return s + f.amount; }, 0);
+
     document.getElementById('totalIncome').textContent = formatMoney(inc);
     document.getElementById('totalExpense').textContent = formatMoney(exp);
-    document.getElementById('totalProfit').textContent = formatMoney(inc - exp);
+    
+    // Sof foyda: Jami daromad - (Xarajatlar - DostavkaXarajati) - Tannarx - DostavkaXarajati
+    // Soddalashtirilgan: Jami daromad - Xarajatlar - Tannarx
+    // Lekin dostavka daromadga ham kirgan bo'lsa uni ham ayirish kerak
+    var netProfit = inc - exp - totalCostPrice;
+    document.getElementById('totalProfit').textContent = formatMoney(netProfit);
+
+    // Tannarxlar ro'yxatini chiqarish (Dashboard)
+    var costListEl = document.getElementById('dashCostList');
+    var emptyCostEl = document.getElementById('dashEmptyCost');
+    if (costListEl) {
+        if (soldSales.length === 0) {
+            costListEl.innerHTML = '';
+            emptyCostEl.style.display = 'block';
+        } else {
+            emptyCostEl.style.display = 'none';
+            costListEl.innerHTML = soldSales.slice(0, 10).map(function(s) {
+                var sCost = (s.items || []).reduce(function(isum, it) {
+                    var p = productsArr.find(function(px) { return px.id === it.productId; });
+                    return isum + ((p ? p.costPrice || 0 : 0) * it.quantity);
+                }, 0);
+                return '<div class="expense-row" style="cursor:pointer" onclick="editSale(\'' + s.id + '\')">' +
+                    '<div class="expense-icon-wrap" style="background:var(--warning-glow); color:var(--warning)"><i class="fas fa-calculator"></i></div>' +
+                    '<div class="expense-details">' +
+                    '<span class="expense-title">' + escapeHtml(s.name || 'Sotuv') + '</span>' +
+                    '<span class="expense-date">' + formatDate(s.date) + '</span>' +
+                    '</div>' +
+                    '<div class="expense-value-wrap">' +
+                    '<span class="expense-value" style="color:var(--warning)">' + formatMoney(sCost) + '</span>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+    }
 
     // 1. REGION STATS
     var regionCount = {};
