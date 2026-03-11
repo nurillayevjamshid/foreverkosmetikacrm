@@ -1117,17 +1117,50 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div class="modal-overlay" id="deleteModal">
+    <div class="modal-overlay confirm-modal" id="deleteModal" data-tone="danger">
         <div class="modal modal-sm">
-            <div class="modal-header modal-header-danger">
-                <h2><i class="fas fa-exclamation-triangle"></i> O'chirish</h2>
+            <div class="modal-header confirm-header">
+                <h2><i class="fas fa-trash"></i> O'chirishni tasdiqlash</h2>
                 <button class="modal-close" data-modal="deleteModal"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body">
-                <p class="delete-message" id="deleteMessage">Haqiqatan ham o'chirmoqchimisiz?</p>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-modal="deleteModal">Yo'q</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Ha, o'chirish</button>
+                <div class="confirm-hero">
+                    <div class="confirm-icon">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div class="confirm-text">
+                        <h3>Diqqat: bu amal qaytarilmaydi</h3>
+                        <p class="delete-message" id="deleteMessage">Haqiqatan ham o'chirmoqchimisiz?</p>
+                    </div>
+                </div>
+                <div class="modal-footer confirm-actions">
+                    <button type="button" class="btn btn-ghost" data-modal="deleteModal"><i class="fas fa-times"></i> Bekor qilish</button>
+                    <button type="button" class="btn btn-confirm" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Ha, o'chirish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Confirmation Modal -->
+    <div class="modal-overlay confirm-modal" id="editConfirmModal" data-tone="info">
+        <div class="modal modal-sm">
+            <div class="modal-header confirm-header">
+                <h2 id="confirmEditTitle"><i class="fas fa-pen"></i> Tahrirlashni tasdiqlash</h2>
+                <button class="modal-close" data-modal="editConfirmModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-hero">
+                    <div class="confirm-icon">
+                        <i class="fas fa-pen"></i>
+                    </div>
+                    <div class="confirm-text">
+                        <h3>Tahrirlashga o'tamizmi?</h3>
+                        <p id="confirmEditMessage" class="delete-message">Ushbu ma'lumotni tahrirlashni tasdiqlaysizmi?</p>
+                    </div>
+                </div>
+                <div class="modal-footer confirm-actions">
+                    <button type="button" class="btn btn-ghost" data-modal="editConfirmModal"><i class="fas fa-times"></i> Bekor qilish</button>
+                    <button type="button" class="btn btn-confirm" id="confirmEditBtn"><i class="fas fa-check"></i> Ha, tahrirlash</button>
                 </div>
             </div>
         </div>
@@ -1180,3 +1213,4 @@
 </body>
 
 </html>
+

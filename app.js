@@ -95,6 +95,8 @@ function showToast(message, type) {
     }, 3000);
 }
 
+var confirmEditAction = null;
+
 // ==========================================
 // MODAL MANAGEMENT
 // ==========================================
@@ -105,6 +107,7 @@ function openModal(modalId) {
 function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('active');
     document.body.style.overflow = '';
+    if (modalId === 'editConfirmModal') confirmEditAction = null;
 }
 
 document.addEventListener('click', function (e) {
@@ -1157,6 +1160,27 @@ document.getElementById('financeForm').addEventListener('submit', function (e) {
 });
 
 // ==========================================
+// === EDIT CONFIRMATION ===
+// ==========================================
+function openEditConfirm(message, onConfirm, title) {
+    var msgEl = document.getElementById('confirmEditMessage');
+    var titleEl = document.getElementById('confirmEditTitle');
+    if (titleEl) {
+        titleEl.innerHTML = '<i class="fas fa-pen"></i> ' + (title || 'Tahrirlashni tasdiqlash');
+    }
+    if (msgEl) {
+        msgEl.textContent = message || "Ushbu ma'lumotni tahrirlashni tasdiqlaysizmi?";
+    }
+    confirmEditAction = typeof onConfirm === 'function' ? onConfirm : null;
+    openModal('editConfirmModal');
+}
+
+document.getElementById('confirmEditBtn').addEventListener('click', function () {
+    if (typeof confirmEditAction === 'function') confirmEditAction();
+    closeModal('editConfirmModal');
+    confirmEditAction = null;
+});
+// ==========================================
 // === UNIVERSAL DELETE ===
 // ==========================================
 var deleteTarget = { coll: '', id: '', storagePath: '' };
@@ -1230,7 +1254,9 @@ document.addEventListener('click', function (e) {
     btn = e.target.closest('.product-edit-btn');
     if (btn) {
         var pid = btn.getAttribute('data-id');
-        if (pid) editProduct(pid);
+        if (pid) {
+            openEditConfirm("Mahsulotni tahrirlashni tasdiqlaysizmi?", function () { editProduct(pid); }, "Mahsulotni tahrirlash");
+        }
         return;
     }
 
@@ -1250,7 +1276,9 @@ document.addEventListener('click', function (e) {
     btn = e.target.closest('.sale-edit-btn');
     if (btn) {
         var sid = btn.getAttribute('data-id');
-        if (sid) editSale(sid);
+        if (sid) {
+            openEditConfirm("Sotuvni tahrirlashga o'tasizmi?", function () { editSale(sid); }, "Sotuvni tahrirlash");
+        }
         return;
     }
 
@@ -1266,7 +1294,9 @@ document.addEventListener('click', function (e) {
     btn = e.target.closest('.finance-edit-btn');
     if (btn) {
         var fid = btn.getAttribute('data-id');
-        if (fid) editFinance(fid);
+        if (fid) {
+            openEditConfirm("Ushbu yozuvni tahrirlashni tasdiqlaysizmi?", function () { editFinance(fid); }, "Yozuvni tahrirlash");
+        }
         return;
     }
 
@@ -1679,7 +1709,9 @@ document.addEventListener('click', function (e) {
     btn = e.target.closest('.user-edit-btn');
     if (btn) {
         var uid = btn.getAttribute('data-id');
-        if (uid) editUser(uid);
+        if (uid) {
+            openEditConfirm("Xodim ma'lumotlarini tahrirlashni tasdiqlaysizmi?", function () { editUser(uid); }, "Xodimni tahrirlash");
+        }
         return;
     }
 
@@ -2039,21 +2071,23 @@ document.addEventListener('click', function (e) {
     var btn = e.target.closest('.customer-edit-btn');
     if (btn) {
         var id = btn.dataset.id;
-        db.collection('customers').doc(id).get().then(function (doc) {
-            if (doc.exists) {
-                var c = doc.data();
-                document.getElementById('customerId').value = id;
-                document.getElementById('customerName').value = c.name;
-                document.getElementById('customerPhone').value = c.phone;
-                document.getElementById('customerTelegram').value = c.telegram || '';
-                document.getElementById('customerBirthday').value = c.birthday || '';
-                document.getElementById('customerAddress').value = c.address || '';
-                document.getElementById('customerNote').value = c.note || '';
-                setSelectValue('customerRegionPicker', c.region, c.region);
-                document.getElementById('customerModalTitle').innerHTML = '<i class="fas fa-pen"></i> Mijozni tahrirlash';
-                openModal('customerModal');
-            }
-        });
+        openEditConfirm("Mijoz ma'lumotlarini tahrirlashni tasdiqlaysizmi?", function () {
+            db.collection('customers').doc(id).get().then(function (doc) {
+                if (doc.exists) {
+                    var c = doc.data();
+                    document.getElementById('customerId').value = id;
+                    document.getElementById('customerName').value = c.name;
+                    document.getElementById('customerPhone').value = c.phone;
+                    document.getElementById('customerTelegram').value = c.telegram || '';
+                    document.getElementById('customerBirthday').value = c.birthday || '';
+                    document.getElementById('customerAddress').value = c.address || '';
+                    document.getElementById('customerNote').value = c.note || '';
+                    setSelectValue('customerRegionPicker', c.region, c.region);
+                    document.getElementById('customerModalTitle').innerHTML = '<i class="fas fa-pen"></i> Mijozni tahrirlash';
+                    openModal('customerModal');
+                }
+            });
+        }, "Mijozni tahrirlash");
         return;
     }
 
@@ -2137,6 +2171,23 @@ document.addEventListener('click', function (e) {
         });
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
