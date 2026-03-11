@@ -500,6 +500,7 @@ function renderProducts(searchTerm) {
     searchTerm = searchTerm || '';
     var tbody = document.getElementById('productsBody');
     var empty = document.getElementById('productsEmpty');
+    var cards = document.getElementById('productsCards');
     var filtered = productsArr.slice();
     if (searchTerm) {
         var q = searchTerm.toLowerCase();
@@ -517,7 +518,12 @@ function renderProducts(searchTerm) {
     if (productsFilter.status !== 'all') {
         filtered = filtered.filter(function (p) { return (p.status || 'active') === productsFilter.status; });
     }
-    if (filtered.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+    if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        if (cards) cards.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
     empty.style.display = 'none';
     tbody.innerHTML = filtered.map(function (p, i) {
         var status = p.status || 'active';
@@ -531,9 +537,9 @@ function renderProducts(searchTerm) {
             '<td data-label="#">' + (i + 1) + '</td>' +
             '<td data-label="Mahsulot"><div class="product-list-info">' + imageHtml +
             '<div class="product-list-meta"><span class="product-list-name">' + escapeHtml(p.name) + '</span></div></div></td>' +
-            '<td data-label="Kategoriya">' + escapeHtml(p.category || '–≤–Ç‚Äù') + '</td>' +
+            '<td data-label="Kategoriya">' + escapeHtml(p.category || 'ó') + '</td>' +
             '<td data-label="Narx">' + formatMoney(p.price) + '</td>' +
-            '<td data-label="Tannarx">' + (p.cost ? formatMoney(p.cost) : '\u2014') + '</td>' +
+            '<td data-label="Tannarx">' + (p.cost ? formatMoney(p.cost) : 'ó') + '</td>' +
             '<td data-label="Status"><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>' +
             '<td data-label="Amallar">' +
             '<button class="btn-icon edit product-edit-btn" data-id="' + p.id + '" title="Tahrirlash"><i class="fas fa-pen"></i></button>' +
@@ -541,6 +547,25 @@ function renderProducts(searchTerm) {
             '</td>' +
             '</tr>';
     }).join('');
+
+    if (cards) {
+        cards.innerHTML = filtered.map(function (p) {
+            var safeName = p.name || "Noma'lum";
+            var firstLetter = (safeName.charAt(0) || 'M').toUpperCase();
+            var cardImage = p.imageUrl
+                ? '<img src="' + p.imageUrl + '" alt="' + escapeHtml(safeName) + '">' 
+                : '<div class="product-mobile-placeholder">' + escapeHtml(firstLetter) + '</div>';
+            return '' +
+                '<button type="button" class="product-mobile-card" data-id="' + p.id + '">' +
+                '<div class="product-mobile-media">' + cardImage + '</div>' +
+                '<div class="product-mobile-info">' +
+                '<div class="product-mobile-name">' + escapeHtml(safeName) + '</div>' +
+                '<div class="product-mobile-price">' + formatMoney(p.price) + '</div>' +
+                '</div>' +
+                '<div class="product-mobile-arrow"><i class="fas fa-chevron-right"></i></div>' +
+                '</button>';
+        }).join('');
+    }
 }
 
 function editProduct(id) {
@@ -560,6 +585,107 @@ function editProduct(id) {
         document.getElementById('imageUploadPlaceholder').style.display = 'none';
     }
     openModal('productModal');
+}
+
+function openProductDetailsModal(id) {
+    var p = productsArr.find(function (x) { return x.id === id; });
+    if (!p) return;
+    var modal = document.getElementById('productDetailsModal');
+    if (!modal) return;
+
+    var safeName = p.name || 'Mahsulot';
+    modal.dataset.productId = p.id;
+    modal.dataset.productName = safeName;
+    modal.dataset.productStoragePath = p.imageStoragePath || '';
+
+    var hero = document.getElementById('productDetailsHero');
+    if (hero) {
+        hero.innerHTML = '';
+        if (p.imageUrl) {
+            var img = document.createElement('img');
+            img.src = p.imageUrl;
+            img.alt = safeName;
+            hero.appendChild(img);
+        } else {
+            var placeholder = document.createElement('div');
+            placeholder.className = 'product-details-placeholder';
+            var icon = document.createElement('i');
+            icon.className = 'fas fa-image';
+            var span = document.createElement('span');
+            span.textContent = "Rasm yo'q";
+            placeholder.appendChild(icon);
+            placeholder.appendChild(span);
+            hero.appendChild(placeholder);
+        }
+    }
+
+    var nameEl = document.getElementById('productDetailsName');
+    if (nameEl) nameEl.textContent = safeName;
+
+    var priceEl = document.getElementById('productDetailsPrice');
+    if (priceEl) priceEl.textContent = formatMoney(p.price);
+
+    var categoryEl = document.getElementById('productDetailsCategory');
+    if (categoryEl) categoryEl.textContent = p.category || 'ó';
+
+    var costEl = document.getElementById('productDetailsCost');
+    if (costEl) costEl.textContent = p.cost ? formatMoney(p.cost) : 'ó';
+
+    var descEl = document.getElementById('productDetailsDescription');
+    if (descEl) descEl.textContent = p.description ? p.description : 'ó';
+
+    var status = p.status || 'active';
+    var statusText = status === 'inactive' ? 'Inactive' : 'Active';
+    var statusClass = status === 'inactive' ? 'inactive' : 'active';
+    var statusEl = document.getElementById('productDetailsStatus');
+    if (statusEl) {
+        statusEl.textContent = statusText;
+        statusEl.className = 'status-badge ' + statusClass;
+    }
+
+    var canEdit = currentUserRole === 'admin';
+    var editBtn = document.getElementById('productDetailsEditBtn');
+    var deleteBtn = document.getElementById('productDetailsDeleteBtn');
+    if (editBtn) editBtn.style.display = canEdit ? 'inline-flex' : 'none';
+    if (deleteBtn) deleteBtn.style.display = canEdit ? 'inline-flex' : 'none';
+
+    openModal('productDetailsModal');
+}
+
+var productsCards = document.getElementById('productsCards');
+if (productsCards) {
+    productsCards.addEventListener('click', function (e) {
+        var card = e.target.closest('.product-mobile-card');
+        if (!card) return;
+        var pid = card.getAttribute('data-id');
+        if (pid) openProductDetailsModal(pid);
+    });
+}
+
+var detailsEditBtn = document.getElementById('productDetailsEditBtn');
+if (detailsEditBtn) {
+    detailsEditBtn.addEventListener('click', function () {
+        var modal = document.getElementById('productDetailsModal');
+        if (!modal) return;
+        var pid = modal.dataset.productId || '';
+        if (!pid) return;
+        closeModal('productDetailsModal');
+        openEditConfirm("Mahsulotni tahrirlashni tasdiqlaysizmi?", function () { editProduct(pid); }, "Mahsulotni tahrirlash");
+    });
+}
+
+var detailsDeleteBtn = document.getElementById('productDetailsDeleteBtn');
+if (detailsDeleteBtn) {
+    detailsDeleteBtn.addEventListener('click', function () {
+        var modal = document.getElementById('productDetailsModal');
+        if (!modal) return;
+        var pid = modal.dataset.productId || '';
+        var name = modal.dataset.productName || '';
+        var path = modal.dataset.productStoragePath || '';
+        if (!pid) return;
+        closeModal('productDetailsModal');
+        deleteProductWithImage(pid, name || 'Mahsulot', path);
+    });
 }
 
 document.getElementById('addProductBtn').addEventListener('click', function () {
@@ -2171,6 +2297,8 @@ document.addEventListener('click', function (e) {
         });
     }
 });
+
+
 
 
 

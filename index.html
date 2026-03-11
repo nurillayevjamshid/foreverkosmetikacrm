@@ -453,6 +453,7 @@
                 </div>
                 <div class="card">
                     <div class="card-body">
+                        <div class="products-mobile-grid" id="productsCards"></div>
                         <div class="table-responsive">
                             <table class="data-table" id="productsTable">
                                 <thead>
@@ -928,7 +929,44 @@
         </div>
     </div>
 
-
+    <!-- Product Details Modal -->
+    <div class="modal-overlay" id="productDetailsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-box-open"></i> Mahsulot ma'lumotlari</h2>
+                <button class="modal-close" data-modal="productDetailsModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="product-details-hero" id="productDetailsHero"></div>
+                <div class="product-details-header">
+                    <div class="product-details-title" id="productDetailsName">-</div>
+                    <div class="product-details-price" id="productDetailsPrice">-</div>
+                </div>
+                <div class="product-details-status">
+                    <span class="status-badge" id="productDetailsStatus">Active</span>
+                </div>
+                <ul class="info-list product-details-list">
+                    <li class="info-item">
+                        <span class="info-label">Kategoriya</span>
+                        <span class="info-value" id="productDetailsCategory">-</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">Tannarx</span>
+                        <span class="info-value" id="productDetailsCost">-</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-label">Tavsif</span>
+                        <span class="info-value" id="productDetailsDescription">-</span>
+                    </li>
+                </ul>
+                <div class="modal-footer product-details-actions">
+                    <button type="button" class="btn btn-secondary" data-modal="productDetailsModal">Yopish</button>
+                    <button type="button" class="btn btn-primary" id="productDetailsEditBtn"><i class="fas fa-pen"></i> Tahrirlash</button>
+                    <button type="button" class="btn btn-danger" id="productDetailsDeleteBtn"><i class="fas fa-trash"></i> O'chirish</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- User Form Modal -->
     <div class="modal-overlay" id="userModal">
@@ -1213,4 +1251,10 @@
 </body>
 
 </html>
+
+
+
+
+
+
 
