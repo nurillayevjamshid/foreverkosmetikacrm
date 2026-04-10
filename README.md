@@ -1,4 +1,5 @@
 # CosmeticaCRM - Men Kosmetika Biznesi Boshqaruvi
+<!-- Project updated and moved to a new folder -->
 
 Bu loyiha kosmetika biznesi uchun CRM tizimi bo'lib, sotuvlar, kirim-chiqimlar va mahsulotlarni boshqarishga yordam beradi.
 
