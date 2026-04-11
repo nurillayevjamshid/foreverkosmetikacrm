@@ -28,4 +28,4 @@ Ushbu loyiha GitHub Pages orqali avtomatik ravishda deploy qilinadigan qilib soz
 - **CI/CD**: GitHub Actions
 
 ---
-© 2024 Forever Kosmetika
+© 2026 Forever Kosmetika
