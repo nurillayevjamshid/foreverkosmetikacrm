@@ -2870,12 +2870,18 @@ html[data-theme="light"] .sale-items-add-btn {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    overflow: hidden; /* Added */
+    min-width: 0; /* Added for flexbox ellipsis */
 }
 
 .expense-title {
     font-weight: 700;
     font-size: 0.95rem;
     color: var(--text);
+    white-space: nowrap; /* Added */
+    overflow: hidden; /* Added */
+    text-overflow: ellipsis; /* Added */
+    width: 100%; /* Added */
 }
 
 .expense-date {

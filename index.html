@@ -954,7 +954,7 @@
                         <span class="info-label">Tannarx</span>
                         <span class="info-value" id="productDetailsCost">-</span>
                     </li>
-                    <li class="info-item">
+                        <li class="info-item">
                         <span class="info-label">Tavsif</span>
                         <span class="info-value" id="productDetailsDescription">-</span>
                     </li>
@@ -963,6 +963,37 @@
                     <button type="button" class="btn btn-secondary" data-modal="productDetailsModal">Yopish</button>
                     <button type="button" class="btn btn-primary" id="productDetailsEditBtn"><i class="fas fa-pen"></i> Tahrirlash</button>
                     <button type="button" class="btn btn-danger" id="productDetailsDeleteBtn"><i class="fas fa-trash"></i> O'chirish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Finance Details Modal -->
+    <div class="modal-overlay" id="financeDetailsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-wallet"></i> Tranzaksiya ma'lumotlari</h2>
+                <button class="modal-close" data-modal="financeDetailsModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="financeDetailsIconWrap" style="width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 20px;">
+                    <i id="financeDetailsIcon" class="fas fa-receipt"></i>
+                </div>
+                <div class="product-details-header" style="text-align: center; justify-content: center; flex-direction: column; align-items: center;">
+                    <div class="product-details-price" id="financeDetailsAmount" style="font-size: 24px; margin-bottom: 5px;">-</div>
+                    <div class="product-details-title" id="financeDetailsCategory" style="font-size: 16px; opacity: 0.8;">-</div>
+                </div>
+                <ul class="info-list" style="margin-top: 25px;">
+                    <li class="info-item">
+                        <span class="info-label">Sana</span>
+                        <span class="info-value" id="financeDetailsDate">-</span>
+                    </li>
+                    <li class="info-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <span class="info-label">Tavsif</span>
+                        <span class="info-value" id="financeDetailsDescription" style="white-space: pre-wrap; word-break: break-word; text-align: left; width: 100%;">-</span>
+                    </li>
+                </ul>
+                <div class="modal-footer" style="margin-top: 30px;">
+                    <button type="button" class="btn btn-secondary" data-modal="financeDetailsModal" style="width: 100%;">Yopish</button>
                 </div>
             </div>
         </div>
@@ -998,7 +1029,7 @@
                                 <i class="fas fa-user-shield"></i>
                                 <span>Admin (To'liq huquq)</span>
                             </button>
-                            <button type="button" class="select-option selected" data-value="manager">
+<button type="button" class="select-option selected" data-value="manager">
                                 <i class="fas fa-user-tie"></i>
                                 <span>Manager (Cheklangan)</span>
                             </button>

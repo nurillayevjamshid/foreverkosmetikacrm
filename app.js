@@ -2326,3 +2326,38 @@ document.addEventListener('click', function (e) {
 
 
 
+
+function openFinanceDetail(id) {
+    var f = financesArr.find(function (x) { return x.id === id; });
+    if (!f) return;
+
+    var icon = 'fa-receipt';
+    var typeClass = 'other';
+    var desc = (f.description || '').toLowerCase();
+
+    if (desc.includes('yandex') || desc.includes('taxi') || desc.includes('taksi')) {
+        icon = 'fa-car';
+        typeClass = 'transport';
+    } else if (desc.includes('target') || desc.includes('reklama') || desc.includes('ads')) {
+        icon = 'fa-bullhorn';
+        typeClass = 'marketing';
+    } else if (desc.includes('pochta') || desc.includes('dostavka') || desc.includes('kurer')) {
+        icon = 'fa-envelope';
+        typeClass = 'service';
+    }
+
+    var wrap = document.getElementById('financeDetailsIconWrap');
+    if (wrap) {
+        wrap.className = 'expense-icon-wrap ' + typeClass;
+        wrap.style.margin = '0 auto 20px';
+    }
+    var iconEl = document.getElementById('financeDetailsIcon');
+    if (iconEl) iconEl.className = 'fas ' + icon;
+
+    document.getElementById('financeDetailsAmount').textContent = formatMoney(f.amount);
+    document.getElementById('financeDetailsCategory').textContent = f.category || '-';
+    document.getElementById('financeDetailsDate').textContent = formatDate(f.date);
+    document.getElementById('financeDetailsDescription').textContent = f.description || '-';
+
+    openModal('financeDetailsModal');
+}
